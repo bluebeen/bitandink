@@ -8,6 +8,7 @@ export default function StudioPage() {
 
   return (
     <ContentIndexPage
+      panelVariant="studio"
       eyebrow="STUDIO"
       title="Visual Notes and Experiments"
       description="작업, 시도, 시각적 실험과 기록을 모아둔 공간입니다."

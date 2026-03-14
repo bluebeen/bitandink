@@ -19,7 +19,7 @@ export default function ContentCard({ item }: Props) {
         ) : null}
 
         <div className="space-y-2">
-          <h2 className="text-2xl font-semibold tracking-tight text-white transition group-hover:text-emerald-300">
+          <h2 className="text-2xl font-semibold tracking-tight text-white transition group-hover:text-[var(--color-accent)]/80">
             {item.title}
           </h2>
           <p className="text-sm leading-7 text-neutral-400">{item.summary}</p>

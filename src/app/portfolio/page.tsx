@@ -8,6 +8,7 @@ export default function PortfolioPage() {
 
   return (
     <ContentIndexPage
+      panelVariant="portfolio"
       eyebrow="PORTFOLIO"
       title="Selected Work"
       description="문제를 정의하고 구조로 해결한 프로젝트 기록입니다."

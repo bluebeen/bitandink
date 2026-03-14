@@ -26,6 +26,7 @@ export default async function WritingsCategoryPage({ params }: Props) {
 
   return (
     <ContentIndexPage
+      panelVariant="writing"
       eyebrow="WRITING CATEGORY"
       title={category}
       description={`${category} 카테고리의 글을 모아봤습니다.`}

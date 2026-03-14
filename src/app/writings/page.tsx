@@ -8,6 +8,7 @@ export default function WritingsPage() {
 
   return (
     <ContentIndexPage
+      panelVariant="writing"
       eyebrow="WRITING"
       title="Thinking in Public"
       description="생각, 설계, 구현, 실험을 기록하는 글 아카이브입니다."

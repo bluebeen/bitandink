@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Container from "@/components/common/Container";
 import ConceptPanel from "@/components/common/ConceptPanel";
-import Button from "@/components/common/Button";
 
 const quickLinks = [
   { href: "/writings", label: "open --writings" },
@@ -48,13 +47,20 @@ export default function NotFound() {
             </div>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <Button href="/" variant="terminal">
+              <Link
+                href="/"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.02] px-5 py-3 font-mono text-sm text-[var(--color-text)] transition-all duration-200 hover:border-[rgba(34,197,94,0.26)] hover:bg-[rgba(34,197,94,0.05)]"
+              >
+                <span className="text-[var(--color-accent)]">$</span>
                 홈으로 돌아가기
-              </Button>
+              </Link>
 
-              <Button href="/about" variant="secondary">
+              <Link
+                href="/about"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-[var(--color-text)] transition-all duration-200 hover:bg-white/[0.06] hover:border-white/15"
+              >
                 about 보기
-              </Button>
+              </Link>
             </div>
 
             <div className="mt-10 grid gap-4 md:grid-cols-3">

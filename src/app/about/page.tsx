@@ -1,5 +1,5 @@
-import AboutPage from "@/components/about/AboutPage";
+import AboutPageUI from "@/components/about/AboutPageUI";
 
-export default function Page() {
-  return <AboutPage />;
+export default function AboutPage() {
+  return <AboutPageUI />;
 }

@@ -12,24 +12,25 @@
   --grid-line-strong: rgba(100, 116, 139, 0.22);
 }
 
-html {
-  background: var(--color-primary);
-}
+/* =========================
+   Base
+========================= */
 
-html,
-body {
+html {
   margin: 0;
   padding: 0;
+  background: var(--color-primary);
 }
 
 body {
   min-height: 100vh;
+  margin: 0;
+  padding: 0;
   color: var(--color-text);
   background:
     radial-gradient(circle at top, rgba(34, 197, 94, 0.06), transparent 30%),
     var(--color-primary);
   -webkit-font-smoothing: antialiased;
-
   word-break: keep-all;
   overflow-wrap: break-word;
 }
@@ -48,25 +49,64 @@ img {
   max-width: 100%;
 }
 
-/* 원고지 느낌 기본 배경 */
-.manuscript-grid {
+/* =========================
+   Grid / Background
+========================= */
+
+.manuscript-grid,
+.manuscript-grid-strong {
   position: relative;
+  background-size: var(--grid-size) var(--grid-size);
+}
+
+.manuscript-grid {
   background-image:
     linear-gradient(var(--grid-line) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-  background-size: var(--grid-size) var(--grid-size);
 }
 
-/* 조금 더 진한 원고지 프레임 */
 .manuscript-grid-strong {
-  position: relative;
   background-image:
     linear-gradient(var(--grid-line-strong) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid-line-strong) 1px, transparent 1px);
-  background-size: var(--grid-size) var(--grid-size);
 }
 
-/* 종이 + 화면 사이 느낌 */
+.site-grid-bg {
+  position: relative;
+  isolation: isolate;
+}
+
+.site-grid-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.32;
+  background-image:
+    linear-gradient(rgba(100, 116, 139, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(100, 116, 139, 0.08) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.site-grid-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: -1;
+  height: 420px;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at top,
+    rgba(34, 197, 94, 0.06),
+    transparent 60%
+  );
+}
+
+/* =========================
+   Surface / Panel
+========================= */
+
 .paper-surface {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.015), rgba(255, 255, 255, 0)),
@@ -77,7 +117,6 @@ img {
     0 18px 60px rgba(0, 0, 0, 0.32);
 }
 
-/* 허브 카드용 */
 .terminal-paper-panel {
   background:
     linear-gradient(180deg, rgba(34, 197, 94, 0.03), rgba(34, 197, 94, 0)),
@@ -89,35 +128,84 @@ img {
     0 0 30px rgba(34, 197, 94, 0.06);
 }
 
-/* 살짝 번지는 하이라이트 */
-.accent-glow {
-  box-shadow: 0 0 24px rgba(34, 197, 94, 0.15);
-}
-
-/* 터미널 캐럿 */
-.terminal-caret::after {
-  content: "_";
-  display: inline-block;
-  margin-left: 2px;
-  color: var(--color-accent);
-  animation: caret-blink 1s steps(1) infinite;
-}
-
-@keyframes caret-blink {
-  0%,
-  49% {
-    opacity: 1;
-  }
-  50%,
-  100% {
-    opacity: 0;
-  }
-}
-
-/* 스캔라인 오버레이 */
-.scanline,
-.noise-overlay {
+.manuscript-paper {
   position: relative;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.05) 0,
+      rgba(255, 255, 255, 0.05) 1px,
+      transparent 1px,
+      transparent 44px
+    ),
+    linear-gradient(
+      to right,
+      rgba(255, 120, 120, 0.08) 0,
+      rgba(255, 120, 120, 0.08) 1px,
+      transparent 1px,
+      transparent 44px
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.015),
+      rgba(255, 255, 255, 0.005)
+    );
+  background-size: 100% 44px, 44px 100%, 100% 100%;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 20px 60px rgba(0, 0, 0, 0.28);
+}
+
+.manuscript-paper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    linear-gradient(
+      to right,
+      transparent 0,
+      transparent 72px,
+      rgba(255, 120, 120, 0.12) 72px,
+      rgba(255, 120, 120, 0.12) 73px,
+      transparent 73px
+    );
+}
+
+.terminal-frame {
+  position: relative;
+  border: 1px solid rgba(100, 116, 139, 0.3);
+  background: var(--color-surface);
+}
+
+.terminal-frame::before {
+  content: "";
+  display: block;
+  height: 36px;
+  border-bottom: 1px solid rgba(100, 116, 139, 0.22);
+  background:
+    radial-gradient(circle at 18px 18px, #ef4444 0 4px, transparent 5px),
+    radial-gradient(circle at 38px 18px, #f59e0b 0 4px, transparent 5px),
+    radial-gradient(circle at 58px 18px, #22c55e 0 4px, transparent 5px);
+}
+
+/* =========================
+   Overlay Effects
+========================= */
+
+.scanline,
+.noise-overlay,
+.code-overlay,
+.code-rain,
+.code-rain-soft {
+  position: relative;
+}
+
+.scanline,
+.noise-overlay,
+.code-overlay {
   isolation: isolate;
 }
 
@@ -145,11 +233,12 @@ img {
 .scanline::after {
   content: "";
   position: absolute;
+  top: -120px;
   left: 0;
   right: 0;
   height: 80px;
-  top: -120px;
   pointer-events: none;
+  opacity: 0.35;
   background: linear-gradient(
     to bottom,
     transparent,
@@ -157,19 +246,8 @@ img {
     transparent
   );
   animation: scanline-move 8s linear infinite;
-  opacity: 0.35;
 }
 
-@keyframes scanline-move {
-  0% {
-    transform: translateY(-20%);
-  }
-  100% {
-    transform: translateY(140vh);
-  }
-}
-
-/* 미세 노이즈 느낌 */
 .noise-overlay::before {
   content: "";
   position: absolute;
@@ -183,72 +261,12 @@ img {
   background-size: 10px 10px;
 }
 
-/* 터미널 헤더 바 */
-.terminal-frame {
-  position: relative;
-  border: 1px solid rgba(100, 116, 139, 0.3);
-  background: var(--color-surface);
-}
-
-.terminal-frame::before {
-  content: "";
-  display: block;
-  height: 36px;
-  border-bottom: 1px solid rgba(100, 116, 139, 0.22);
-  background:
-    radial-gradient(circle at 18px 18px, #ef4444 0 4px, transparent 5px),
-    radial-gradient(circle at 38px 18px, #f59e0b 0 4px, transparent 5px),
-    radial-gradient(circle at 58px 18px, #22c55e 0 4px, transparent 5px);
-}
-
-/* 살짝 깜빡이는 텍스트 */
-.phosphor {
-  text-shadow: 0 0 10px rgba(34, 197, 94, 0.18);
-}
-
-.site-grid-bg {
-  position: relative;
-  isolation: isolate;
-}
-
-.site-grid-bg::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: -1;
-  opacity: 0.32;
-  background-image:
-    linear-gradient(rgba(100, 116, 139, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(100, 116, 139, 0.08) 1px, transparent 1px);
-  background-size: 32px 32px;
-}
-
-.site-grid-bg::after {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 420px;
-  pointer-events: none;
-  z-index: -1;
-  background: radial-gradient(
-    circle at top,
-    rgba(34, 197, 94, 0.06),
-    transparent 60%
-  );
-}
-
-.code-overlay {
-  position: relative;
-  isolation: isolate;
-}
-
 .code-overlay::before {
   content: "";
   position: absolute;
   inset: 0;
-  pointer-events: none;
   z-index: 0;
+  pointer-events: none;
   opacity: 0.08;
   background-image: linear-gradient(
     transparent 0,
@@ -263,20 +281,97 @@ img {
   z-index: 1;
 }
 
-/* desktop padding 기준 보정 */
-@media (min-width: 768px) {
-  .intro-detail-card::after {
-    left: 1.75rem;
-    top: 3.15rem;
-  }
+.code-rain,
+.code-rain-soft {
+  overflow: hidden;
 }
 
-/* bitandink writing body */
+.code-rain::before,
+.code-rain-soft::before {
+  content: "";
+  position: absolute;
+  inset: -20% 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 18px,
+      rgba(16, 185, 129, 0.07) 18px 19px
+    );
+}
+
+.code-rain::after,
+.code-rain-soft::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* Strong rain */
+.code-rain::before {
+  opacity: 0.55;
+  animation: code-rain-flow 18s linear infinite;
+}
+
+.code-rain::after {
+  background:
+    linear-gradient(to bottom, rgba(15, 23, 42, 0.05), rgba(15, 23, 42, 0.28)),
+    radial-gradient(circle at top, rgba(16, 185, 129, 0.08), transparent 55%);
+}
+
+/* Soft rain */
+.code-rain-soft::before {
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 18px,
+      rgba(16, 185, 129, 0.045) 18px 19px
+    );
+  opacity: 0.28;
+  animation: code-rain-soft-flow 20s linear infinite;
+}
+
+.code-rain-soft::after {
+  background:
+    linear-gradient(to bottom, rgba(15, 23, 42, 0.03), rgba(15, 23, 42, 0.14)),
+    radial-gradient(circle at top, rgba(16, 185, 129, 0.05), transparent 58%);
+}
+
+/* =========================
+   Utility Effects
+========================= */
+
+.accent-glow {
+  box-shadow: 0 0 24px rgba(34, 197, 94, 0.15);
+}
+
+.phosphor {
+  text-shadow: 0 0 10px rgba(34, 197, 94, 0.18);
+}
+
+.terminal-caret::after {
+  content: "_";
+  display: inline-block;
+  margin-left: 2px;
+  color: var(--color-accent);
+  animation: caret-blink 1s steps(1) infinite;
+}
+
+/* =========================
+   Writing Body
+========================= */
+
 .writing-body {
   color: var(--color-text);
   font-size: 17px;
   line-height: 2;
   letter-spacing: -0.01em;
+}
+
+.writing-body > :first-child {
+  margin-top: 0;
 }
 
 .writing-body :where(p) {
@@ -341,8 +436,8 @@ img {
 .writing-body :where(blockquote) {
   margin-top: 2rem;
   margin-bottom: 2rem;
-  border-left: 2px solid rgba(34, 197, 94, 0.5);
   padding-left: 1rem;
+  border-left: 2px solid rgba(34, 197, 94, 0.5);
   color: rgba(255, 255, 255, 0.72);
 }
 
@@ -372,16 +467,23 @@ img {
 }
 
 .writing-body :where(pre code) {
+  border: 0;
   background: transparent;
   padding: 0;
-  border: 0;
   color: #dbeafe;
   font-size: 0.92rem;
   line-height: 1.75;
 }
 
-.writing-body > :first-child {
-  margin-top: 0;
+/* =========================
+   Responsive
+========================= */
+
+@media (min-width: 768px) {
+  .intro-detail-card::after {
+    top: 3.15rem;
+    left: 1.75rem;
+  }
 }
 
 @media (max-width: 768px) {
@@ -411,76 +513,28 @@ img {
   }
 }
 
-.manuscript-paper {
-  position: relative;
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.05) 0,
-      rgba(255, 255, 255, 0.05) 1px,
-      transparent 1px,
-      transparent 44px
-    ),
-    linear-gradient(
-      to right,
-      rgba(255, 120, 120, 0.08) 0,
-      rgba(255, 120, 120, 0.08) 1px,
-      transparent 1px,
-      transparent 44px
-    ),
-    linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.015),
-      rgba(255, 255, 255, 0.005)
-    );
-  background-size: 100% 44px, 44px 100%, 100% 100%;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    0 20px 60px rgba(0, 0, 0, 0.28);
+/* =========================
+   Keyframes
+========================= */
+
+@keyframes caret-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
 }
 
-.manuscript-paper::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(
-      to right,
-      transparent 0,
-      transparent 72px,
-      rgba(255, 120, 120, 0.12) 72px,
-      rgba(255, 120, 120, 0.12) 73px,
-      transparent 73px
-    );
-  border-radius: inherit;
-}
-
-.code-rain::before {
-  content: "";
-  position: absolute;
-  inset: -20% 0;
-  pointer-events: none;
-  background:
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0 18px,
-      rgba(16, 185, 129, 0.07) 18px 19px
-    );
-  opacity: 0.55;
-  animation: code-rain-flow 18s linear infinite;
-}
-
-.code-rain::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(to bottom, rgba(15, 23, 42, 0.05), rgba(15, 23, 42, 0.28)),
-    radial-gradient(circle at top, rgba(16, 185, 129, 0.08), transparent 55%);
-  border-radius: inherit;
+@keyframes scanline-move {
+  0% {
+    transform: translateY(-20%);
+  }
+  100% {
+    transform: translateY(140vh);
+  }
 }
 
 @keyframes code-rain-flow {
@@ -489,5 +543,14 @@ img {
   }
   to {
     transform: translateY(8%);
+  }
+}
+
+@keyframes code-rain-soft-flow {
+  from {
+    transform: translateY(-6%);
+  }
+  to {
+    transform: translateY(6%);
   }
 }

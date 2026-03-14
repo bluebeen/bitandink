@@ -1,20 +1,21 @@
 "use client";
 
 import { useState } from "react";
+
 import Container from "@/components/common/Container";
 import SectionTitle from "@/components/common/SectionTitle";
 
 const introItems = [
   {
-    title: "BUILD",
-    desc: "화면과 구조를 설계하고, 사용성과 흐름을 다듬습니다.",
+    title: "FRONTENDER",
+    desc: "문제를 구조로 정리하고, 화면과 흐름을 설계합니다.",
   },
   {
-    title: "WRITE",
+    title: "WRITER",
     desc: "생각과 경험, 그리고 이야기를 문장으로 정리합니다.",
   },
   {
-    title: "SITE",
+    title: "SITER",
     desc: "브랜드와 작업이 자연스럽게 보이는 웹사이트를 만듭니다.",
   },
 ];
@@ -25,45 +26,92 @@ const sketchItems = [
   { label: "SITE", value: "connect" },
 ];
 
-export default function Intro() {
+function LandingHero() {
+  return (
+    <section className="py-12 md:py-16">
+      <Container>
+        <section className="relative overflow-hidden rounded-[28px] border border-white/10 terminal-frame terminal-paper-panel scanline noise-overlay code-overlay code-rain">
+          <div className="relative px-8 py-10 md:px-12 md:py-14">
+            <div className="max-w-2xl">
+              <p className="terminal-caret font-mono text-sm text-[var(--color-accent)]">
+                bitandink@beanlog.site:~$
+              </p>
+
+              <h1 className="mt-6 max-w-xl break-keep text-4xl font-semibold leading-[1.15] tracking-tight text-[var(--color-text)] md:text-6xl md:leading-[1.1]">
+                코드와 이야기가
+                <br />
+                만나는 허브
+              </h1>
+
+              <p className="mt-4 text-xs uppercase tracking-[0.3em] text-[var(--color-sub)]">
+                CODE & STORIES
+              </p>
+
+              <p className="mt-6 max-w-xl break-keep text-sm leading-7 text-[var(--color-sub)] md:text-lg">
+                개발과 글쓰기, 그리고 웹사이트 제작을
+                <br />
+                하나의 흐름으로 묶어 정리하는 개인 허브입니다.
+              </p>
+
+              <div className="mt-6 flex flex-wrap gap-2">
+                {["WRITER", "FRONTENDER", "SITER"].map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--color-accent)]"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+
+              <p className="mt-5 font-mono text-xs text-[var(--color-sub)]">
+                beanlog.site
+              </p>
+            </div>
+          </div>
+        </section>
+      </Container>
+    </section>
+  );
+}
+
+function LandingIntro() {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <section className="py-16 md:py-20">
+    <section className="py-12 md:py-16">
       <Container>
-        <div className="relative md:min-h-[470px]">
+        <div className="relative md:min-h-[430px]">
           <div
             className={`relative z-10 origin-top-left transition-all duration-500 ease-out ${
               isExpanded
-                ? "md:w-[52%] md:-translate-x-2 md:scale-[0.985]"
-                : "md:w-[72%] md:translate-x-0 md:scale-100"
+                ? "md:w-[54%] md:-translate-x-1 md:scale-[0.992]"
+                : "md:w-[68%] md:translate-x-0 md:scale-100"
             }`}
           >
             <SectionTitle
               index="01"
-              eyebrow="about this hub"
+              eyebrow="how this works"
               title={
                 <>
-                  <span className="block">코드를 통해 문제를 풀고,</span>
-                  <span className="block">글을 통해 생각을 정리합니다.</span>
+                  <span className="block">만들고, 기록하고,</span>
+                  <span className="block">하나의 흐름으로 정리합니다.</span>
                 </>
               }
               description={
                 <>
-                  bitandink는 개발과 글쓰기를 따로 두지 않습니다.
+                  bitandink는 결과물만 모아두는 공간이 아니라,
                   <br />
-                  만들고, 기록하고, 다듬는 과정을
-                  <br />
-                  하나의 흐름으로 묶는 공간입니다.
+                  작업의 방향과 태도를 함께 보여주는 허브입니다.
                 </>
               }
               titleClassName={
                 isExpanded
-                  ? "md:max-w-[500px] md:text-[2.35rem]"
-                  : "md:max-w-[680px] md:text-[3rem]"
+                  ? "md:max-w-[520px] md:text-[2.25rem]"
+                  : "md:max-w-[640px] md:text-[2.8rem]"
               }
               descriptionClassName={
-                isExpanded ? "md:max-w-[500px]" : "md:max-w-[560px]"
+                isExpanded ? "md:max-w-[500px]" : "md:max-w-[540px]"
               }
             />
 
@@ -73,8 +121,8 @@ export default function Intro() {
               onMouseLeave={() => setIsExpanded(false)}
               onFocus={() => setIsExpanded(true)}
               onBlur={() => setIsExpanded(false)}
-              className="mt-8 block w-full text-left outline-none md:w-[420px]"
-              aria-label="Build, Write, Site 카드 열기"
+              className="mt-8 block w-full text-left outline-none md:w-[400px]"
+              aria-label="BIT, INK, SITE 카드 열기"
             >
               <div
                 className={`w-full rounded-2xl border bg-white/[0.02] p-6 transition-all duration-300 ${
@@ -131,9 +179,9 @@ export default function Intro() {
           </div>
 
           <div
-            className={`hidden md:absolute md:right-0 md:block md:w-[40%] transition-all duration-500 ease-out ${
+            className={`hidden md:absolute md:right-0 md:block md:w-[38%] transition-all duration-500 ease-out ${
               isExpanded
-                ? "md:top-16 pointer-events-auto"
+                ? "md:top-14 pointer-events-auto"
                 : "md:top-10 pointer-events-none"
             }`}
           >
@@ -188,10 +236,19 @@ export default function Intro() {
           </div>
 
           <div className="mt-10 hidden md:block">
-            <div className="h-px w-[82%] bg-[linear-gradient(to_right,rgba(100,116,139,0.04),rgba(34,197,94,0.16),rgba(100,116,139,0.04))]" />
+            <div className="h-px w-[80%] bg-[linear-gradient(to_right,rgba(100,116,139,0.04),rgba(34,197,94,0.16),rgba(100,116,139,0.04))]" />
           </div>
         </div>
       </Container>
     </section>
+  );
+}
+
+export default function LandingPageUI() {
+  return (
+    <>
+      <LandingHero />
+      <LandingIntro />
+    </>
   );
 }
