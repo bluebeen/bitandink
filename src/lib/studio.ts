@@ -1,59 +1,70 @@
+import fs from "fs";
 import path from "path";
-import { createMdxCollection } from "@/lib/content-ts/mdx-collection";
+import matter from "gray-matter";
 
 export interface StudioMeta {
   slug: string;
   title: string;
   summary: string;
-  date: string;
-  published: boolean;
-  featured?: boolean;
+  date?: string;
+  year?: string;
   tags?: string[];
+  published?: boolean;
+  featured?: boolean;
   thumbnail?: string;
-  kind?: string;
 }
 
 export interface StudioPost extends StudioMeta {
   content: string;
 }
 
-const directory = path.join(
-  process.cwd(),
-  "src/mdx-content/studio/posts"
-);
+const studioDir = path.join(process.cwd(), "src/mdx-content/studio/posts");
 
-const collection = createMdxCollection<StudioPost>({
-  directory,
-  parse: ({ fileName, data, content }) => {
-    const slugFromFile = fileName.replace(/\.mdx$/, "");
+function parseStudioFile(fileName: string): StudioPost {
+  const slug = fileName.replace(/\.mdx$/, "");
+  const filePath = path.join(studioDir, fileName);
+  const source = fs.readFileSync(filePath, "utf-8");
+  const { data, content } = matter(source);
 
-    return {
-      slug: (data.slug as string) ?? slugFromFile,
-      title: (data.title as string) ?? slugFromFile,
-      summary: (data.summary as string) ?? "",
-      date: (data.date as string) ?? "",
-      published: (data.published as boolean) ?? true,
-      featured: (data.featured as boolean) ?? false,
-      tags: (data.tags as string[]) ?? [],
-      thumbnail: (data.thumbnail as string) ?? "",
-      kind: (data.kind as string) ?? "",
-      content,
-    };
-  },
-});
-
-export function getAllStudioPosts(): StudioPost[] {
-  return collection.getAllPosts();
+  return {
+    slug,
+    title: data.title ?? "",
+    summary: data.summary ?? "",
+    date: data.date ?? "",
+    year: data.year ?? "",
+    tags: data.tags ?? [],
+    published: data.published ?? true,
+    featured: data.featured ?? false,
+    thumbnail: data.thumbnail ?? "",
+    content,
+  };
 }
 
 export function getAllStudios(): StudioMeta[] {
-  return collection.getAllMeta();
+  const files = fs.readdirSync(studioDir);
+
+  return files
+    .filter((file) => file.endsWith(".mdx"))
+    .map((file) => parseStudioFile(file))
+    .filter((studio) => studio.published !== false)
+    .map(({ content, ...meta }) => meta)
+    .sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
 }
 
-export function getStudioBySlug(slug: string): StudioPost | null {
-  return collection.getBySlug(slug);
+export function getAllStudioPosts(): StudioPost[] {
+  const files = fs.readdirSync(studioDir);
+
+  return files
+    .filter((file) => file.endsWith(".mdx"))
+    .map((file) => parseStudioFile(file))
+    .filter((studio) => studio.published !== false)
+    .sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
 }
 
-export function getFeaturedStudios(): StudioMeta[] {
-  return collection.getFeatured();
+export function getStudioBySlug(slug: string) {
+  return getAllStudioPosts().find((studio) => studio.slug === slug);
+}
+
+export function getRecentStudios(limit = 5) {
+  return getAllStudios().slice(0, limit);
 }

@@ -1,57 +1,52 @@
 import type { ReactNode } from "react";
 import Container from "@/components/common/Container";
-import ContentHeader from "@/components/content-ui/ContentHeader";
-import ContentActions from "@/components/content-ui/common/ContentActions";
 import ContentNavigation from "@/components/content-ui/common/ContentNavigation";
-import type {
-  ContentAction,
-  ContentDetailMeta,
-  ContentNavigationResult,
-} from "@/lib/content-ts/types";
+import type { ContentNavigationResult } from "@/lib/content-ts/navigation";
 
 type Props = {
-  header: ContentDetailMeta;
-  intro?: ReactNode;
-  body: ReactNode;
-  actions?: ContentAction[];
+  eyebrow?: string;
+  title: string;
+  description?: string;
   navigation?: ContentNavigationResult | null;
-  navigationLabel?: string;
-  listHref?: string;
+  bodyClassName?: string;
+  children?: ReactNode;
 };
 
 export default function ContentDetailPage({
-  header,
-  intro,
-  body,
-  actions = [],
-  navigation,
-  navigationLabel,
-  listHref,
+  eyebrow,
+  title,
+  description,
+  navigation = null,
+  bodyClassName = "",
+  children,
 }: Props) {
   return (
-    <>
-      <ContentHeader meta={header} />
+    <Container>
+      <section className="py-16 md:py-20">
+        <div className="space-y-3">
+          {eyebrow ? (
+            <p className="text-sm tracking-[0.2em] text-neutral-500">
+              {eyebrow}
+            </p>
+          ) : null}
 
-      {intro ? (
-        <Container>
-          <section className="space-y-6 pb-8">{intro}</section>
-        </Container>
-      ) : null}
+          <h1 className="text-4xl font-semibold leading-tight text-[var(--color-text)] md:text-5xl">
+            {title}
+          </h1>
 
-      <Container>
-        <article className="writing-body pt-8 pb-16">{body}</article>
-      </Container>
+          {description ? (
+            <p className="max-w-3xl text-lg leading-8 text-[var(--color-sub)]">
+              {description}
+            </p>
+          ) : null}
+        </div>
 
-      <Container>
-        <ContentActions actions={actions} />
-        {navigation ? (
-          <ContentNavigation
-            navigation={navigation}
-            sectionLabel={navigationLabel}
-            listHref={listHref}
-          />
+        {children ? (
+          <article className={`pt-10 ${bodyClassName}`}>{children}</article>
         ) : null}
-      </Container>
-    </>
+
+        {navigation ? <ContentNavigation navigation={navigation} /> : null}
+      </section>
+    </Container>
   );
 }

@@ -5,8 +5,8 @@ import ContentDetailPage from "@/components/content-ui/ContentDetailPage";
 import { getContentNavigation } from "@/lib/content-ts/navigation";
 import {
   getAllWritings,
-  getWritingsByCategory,
   getWritingByCategoryAndSlug,
+  type WritingCategory,
 } from "@/lib/writings";
 
 type Props = {
@@ -22,7 +22,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props) {
   const { category, slug } = await params;
-  const post = getWritingByCategoryAndSlug(category, slug);
+  const post = getWritingByCategoryAndSlug(category as WritingCategory, slug);
 
   if (!post) {
     return { title: "Not Found" };
@@ -34,68 +34,32 @@ export async function generateMetadata({ params }: Props) {
   };
 }
 
-export default async function WritingPostPage({ params }: Props) {
+export default async function WritingDetailPage({ params }: Props) {
   const { category, slug } = await params;
-  const post = getWritingByCategoryAndSlug(category, slug);
+  const post = getWritingByCategoryAndSlug(category as WritingCategory, slug);
 
-  if (!post || !post.published) {
+  if (!post) {
     notFound();
   }
 
-  const categoryPosts = getWritingsByCategory(category);
-
-  const navigation = getContentNavigation({
-    items: categoryPosts,
-    currentSlug: post.slug,
-    getSlug: (item) => item.slug,
-    getTitle: (item) => item.title,
-    getHref: (item) => `/writings/${item.category}/${item.slug}`,
-  });
-
-  const metaLine = [post.date, post.readingTime, post.category]
-    .filter(Boolean)
-    .join(" · ");
+  const navigation = getContentNavigation(
+    getAllWritings().map((item) => ({
+      slug: item.slug,
+      title: item.title,
+      href: `/writings/${item.category}/${item.slug}`,
+    })),
+    slug
+  );
 
   return (
     <ContentDetailPage
-      header={{
-        section: "writing",
-        eyebrow: "WRITING",
-        title: post.title,
-        summary: post.summary,
-        metaLine,
-      }}
-      intro={
-        <div className="space-y-3">
-          <p className="text-sm uppercase tracking-[0.18em] text-neutral-500">
-            Category
-          </p>
-          <p className="text-base text-neutral-300">{post.category}</p>
-
-          {post.tags?.length ? (
-            <div className="flex flex-wrap gap-2 pt-2">
-              {post.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-md border border-white/10 px-2 py-1 text-xs text-neutral-400"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          ) : null}
-        </div>
-      }
-      body={<MDXRemote source={post.content} />}
-      actions={[
-        {
-          label: "Category Archive",
-          href: `/writings/${post.category}`,
-        },
-      ]}
+      eyebrow={post.category.toUpperCase()}
+      title={post.title}
+      description={post.summary}
       navigation={navigation}
-      navigationLabel="Writing"
-      listHref={`/writings/${post.category}`}
-    />
+      bodyClassName="writing-body"
+    >
+      <MDXRemote source={post.content} />
+    </ContentDetailPage>
   );
 }

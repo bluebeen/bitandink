@@ -13,8 +13,8 @@ export function mapWritingsToCardItems(
     eyebrow: post.category,
     tags: post.tags ?? [],
     slug: post.slug,
-    published: post.published,
-    featured: post.featured,
+    published: true,
+    featured: false,
     date: post.date,
   }));
 }
@@ -26,11 +26,11 @@ export function mapProjectsToCardItems(
     href: `/portfolio/${project.slug}`,
     title: project.title,
     summary: project.summary,
-    eyebrow: project.year,
+    eyebrow: project.year || "PROJECT",
     tags: project.stack ?? [],
     slug: project.slug,
-    published: project.published,
-    featured: project.featured,
+    published: project.published ?? true,
+    featured: project.featured ?? false,
     date: project.date,
   }));
 }
@@ -42,11 +42,11 @@ export function mapStudiosToCardItems(
     href: `/studio/${post.slug}`,
     title: post.title,
     summary: post.summary,
-    eyebrow: post.kind || "STUDIO",
+    eyebrow: post.year || "STUDIO",
     tags: post.tags ?? [],
     slug: post.slug,
-    published: post.published,
-    featured: post.featured,
+    published: post.published ?? true,
+    featured: post.featured ?? false,
     date: post.date,
   }));
 }

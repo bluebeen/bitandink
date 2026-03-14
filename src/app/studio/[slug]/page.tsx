@@ -10,58 +10,51 @@ type Props = {
 };
 
 export function generateStaticParams() {
-  return getAllStudios().map((post) => ({
-    slug: post.slug,
+  return getAllStudios().map((studio) => ({
+    slug: studio.slug,
   }));
 }
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
-  const post = getStudioBySlug(slug);
+  const studio = getStudioBySlug(slug);
 
-  if (!post) {
+  if (!studio) {
     return { title: "Not Found" };
   }
 
   return {
-    title: `${post.title} | Studio | bitandink`,
-    description: post.summary,
+    title: `${studio.title} | Studio | bitandink`,
+    description: studio.summary,
   };
 }
 
 export default async function StudioDetailPage({ params }: Props) {
   const { slug } = await params;
-  const post = getStudioBySlug(slug);
+  const studio = getStudioBySlug(slug);
 
-  if (!post || !post.published) {
+  if (!studio) {
     notFound();
   }
 
-  const studios = getAllStudios();
-
-  const navigation = getContentNavigation({
-    items: studios,
-    currentSlug: post.slug,
-    getSlug: (item) => item.slug,
-    getTitle: (item) => item.title,
-    getHref: (item) => `/studio/${item.slug}`,
-  });
-
-  const metaLine = [post.date, post.kind].filter(Boolean).join(" · ");
+  const navigation = getContentNavigation(
+    getAllStudios().map((item) => ({
+      slug: item.slug,
+      title: item.title,
+      href: `/studio/${item.slug}`,
+    })),
+    slug
+  );
 
   return (
     <ContentDetailPage
-      header={{
-        section: "studio",
-        eyebrow: "STUDIO",
-        title: post.title,
-        summary: post.summary,
-        metaLine,
-      }}
-      body={<MDXRemote source={post.content} />}
+      eyebrow="STUDIO"
+      title={studio.title}
+      description={studio.summary}
       navigation={navigation}
-      navigationLabel="Studio"
-      listHref="/studio"
-    />
+      bodyClassName="writing-body"
+    >
+      <MDXRemote source={studio.content} />
+    </ContentDetailPage>
   );
 }

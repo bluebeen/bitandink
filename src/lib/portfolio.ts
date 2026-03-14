@@ -1,14 +1,15 @@
+import fs from "fs";
 import path from "path";
-import { createMdxCollection } from "@/lib/content-ts/mdx-collection";
+import matter from "gray-matter";
 
 export interface ProjectMeta {
   slug: string;
   title: string;
   summary: string;
-  date: string;
-  year: string;
-  stack: string[];
-  published: boolean;
+  date?: string;
+  year?: string;
+  stack?: string[];
+  published?: boolean;
   featured?: boolean;
   thumbnail?: string;
   link?: string;
@@ -22,48 +23,58 @@ export interface ProjectPost extends ProjectMeta {
   content: string;
 }
 
-const directory = path.join(
-  process.cwd(),
-  "src/mdx-content/portfolio/posts"
-);
+const portfolioDir = path.join(process.cwd(), "src/mdx-content/portfolio/posts");
 
-const collection = createMdxCollection<ProjectPost>({
-  directory,
-  parse: ({ fileName, data, content }) => {
-    const slugFromFile = fileName.replace(/\.mdx$/, "");
+function parseProjectFile(fileName: string): ProjectPost {
+  const slug = fileName.replace(/\.mdx$/, "");
+  const filePath = path.join(portfolioDir, fileName);
+  const source = fs.readFileSync(filePath, "utf-8");
+  const { data, content } = matter(source);
 
-    return {
-      slug: (data.slug as string) ?? slugFromFile,
-      title: (data.title as string) ?? slugFromFile,
-      summary: (data.summary as string) ?? "",
-      date: (data.date as string) ?? "",
-      year: (data.year as string) ?? "",
-      stack: (data.stack as string[]) ?? [],
-      published: (data.published as boolean) ?? true,
-      featured: (data.featured as boolean) ?? false,
-      thumbnail: (data.thumbnail as string) ?? "",
-      link: (data.link as string) ?? "",
-      github: (data.github as string) ?? "",
-      problem: (data.problem as string) ?? "",
-      approach: (data.approach as string) ?? "",
-      result: (data.result as string) ?? "",
-      content,
-    };
-  },
-});
-
-export function getAllProjectPosts(): ProjectPost[] {
-  return collection.getAllPosts();
+  return {
+    slug,
+    title: data.title ?? "",
+    summary: data.summary ?? "",
+    date: data.date ?? "",
+    year: data.year ?? "",
+    stack: data.stack ?? [],
+    published: data.published ?? true,
+    featured: data.featured ?? false,
+    thumbnail: data.thumbnail ?? "",
+    link: data.link ?? "",
+    github: data.github ?? "",
+    problem: data.problem ?? "",
+    approach: data.approach ?? "",
+    result: data.result ?? "",
+    content,
+  };
 }
 
 export function getAllProjects(): ProjectMeta[] {
-  return collection.getAllMeta();
+  const files = fs.readdirSync(portfolioDir);
+
+  return files
+    .filter((file) => file.endsWith(".mdx"))
+    .map((file) => parseProjectFile(file))
+    .filter((project) => project.published !== false)
+    .map(({ content, ...meta }) => meta)
+    .sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
 }
 
-export function getProjectBySlug(slug: string): ProjectPost | null {
-  return collection.getBySlug(slug);
+export function getAllProjectPosts(): ProjectPost[] {
+  const files = fs.readdirSync(portfolioDir);
+
+  return files
+    .filter((file) => file.endsWith(".mdx"))
+    .map((file) => parseProjectFile(file))
+    .filter((project) => project.published !== false)
+    .sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
 }
 
-export function getFeaturedProjects(): ProjectMeta[] {
-  return collection.getFeatured();
+export function getProjectBySlug(slug: string) {
+  return getAllProjectPosts().find((project) => project.slug === slug);
+}
+
+export function getRecentProjects(limit = 5) {
+  return getAllProjects().slice(0, limit);
 }

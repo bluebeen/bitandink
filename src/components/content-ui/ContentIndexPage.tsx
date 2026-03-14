@@ -1,15 +1,22 @@
+import Link from "next/link";
 import Container from "@/components/common/Container";
-import ConceptPanel, { type ConceptPanelVariant } from "@/components/common/ConceptPanel";
-import ContentCard from "@/components/content-ui/ContentCard";
-import type { ContentCardItem } from "@/lib/content-ts/types";
+import BaseCard from "@/components/common/BaseCard";
+
+export type ContentIndexItem = {
+  href: string;
+  title: string;
+  summary: string;
+  eyebrow?: string;
+  tags?: string[];
+  slug?: string;
+  date?: string;
+};
 
 type Props = {
   eyebrow?: string;
   title: string;
   description?: string;
-  items: ContentCardItem[];
-  panelVariant?: ConceptPanelVariant;
-  children?: React.ReactNode;
+  items: ContentIndexItem[];
 };
 
 export default function ContentIndexPage({
@@ -17,39 +24,65 @@ export default function ContentIndexPage({
   title,
   description,
   items,
-  panelVariant,
-  children,
 }: Props) {
   return (
-    <Container>
-      <section className="py-10 md:py-12">
-        
-        <ConceptPanel variant={panelVariant} className="mb-8">
-          <p className="font-mono text-sm text-[var(--color-accent)]/80">
-              bitandink@beanlog.site:~$
-          </p>
-          <header className="space-y-4">
-            {eyebrow ? (
-              <p className="text-sm tracking-[0.2em] text-neutral-500 terminal-caret">&gt; {eyebrow}</p>
-            ) : null}
-            <h1 className="text-4xl font-semibold tracking-tight">{title}</h1>
+    <section className="py-16 md:py-20">
+      <Container>
+        <div className="space-y-3">
+          {eyebrow ? (
+            <p className="text-sm tracking-[0.2em] text-neutral-500">
+              {eyebrow}
+            </p>
+          ) : null}
 
-            {description ? (
-              <p className="max-w-2xl text-base leading-7 text-neutral-500 md:text-lg">
-                {description}
-              </p>
-            ) : null}
-          </header>
-        </ConceptPanel>
+          <h1 className="text-4xl font-semibold leading-tight text-[var(--color-text)] md:text-5xl">
+            {title}
+          </h1>
 
-        {children ? <div className="mb-8">{children}</div> : null}
+          {description ? (
+            <p className="max-w-3xl text-lg leading-8 text-[var(--color-sub)]">
+              {description}
+            </p>
+          ) : null}
+        </div>
 
-        <div className="grid gap-6">
+        <div className="mt-10 grid gap-6">
           {items.map((item) => (
-            <ContentCard key={item.href} item={item} />
+            <Link key={item.href} href={item.href} className="block group">
+              <BaseCard>
+                <div className="space-y-3">
+                  {item.eyebrow ? (
+                    <p className="font-mono text-xs uppercase tracking-[0.18em] text-[var(--color-accent)]">
+                      {item.eyebrow}
+                    </p>
+                  ) : null}
+
+                  <h2 className="text-2xl font-semibold text-[var(--color-text)] transition group-hover:text-[var(--color-accent)]">
+                    {item.title}
+                  </h2>
+
+                  <p className="max-w-4xl text-sm leading-7 text-[var(--color-sub)]">
+                    {item.summary}
+                  </p>
+
+                  {item.tags?.length ? (
+                    <div className="flex flex-wrap gap-2 pt-1">
+                      {item.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 font-mono text-[11px] text-[var(--color-sub)]"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+              </BaseCard>
+            </Link>
           ))}
         </div>
-      </section>
-    </Container>
+      </Container>
+    </section>
   );
 }

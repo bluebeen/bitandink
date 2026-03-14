@@ -30,6 +30,6 @@ export const writingCategories: {
     key: "scripts",
     title: "Scripts",
     subtitle: "스크립트",
-    description: "짧은 독백 대본과 숏폼 드라마 대본.",
+    description: "스크립트와 대사 중심의 작업.",
   },
 ];

@@ -1,82 +1,84 @@
+import fs from "fs";
 import path from "path";
-import readingTime from "reading-time";
-import { createMdxCollection } from "@/lib/content-ts/mdx-collection";
+import matter from "gray-matter";
+
+export const writingCategories = [
+  "novels",
+  "essays",
+  "synopses",
+  "scripts",
+] as const;
+
+export type WritingCategory = (typeof writingCategories)[number];
 
 export interface WritingMeta {
   slug: string;
   title: string;
   summary: string;
-  date: string;
-  category: string;
-  published: boolean;
-  featured?: boolean;
+  category: WritingCategory;
   tags?: string[];
-  thumbnail?: string;
-  readingTime?: string;
+  date?: string;
 }
 
 export interface WritingPost extends WritingMeta {
   content: string;
 }
 
-const directory = path.join(
-  process.cwd(),
-  "src/mdx-content/writings/posts"
-);
+const writingsDir = path.join(process.cwd(), "src/mdx-content/writings/posts");
 
-const collection = createMdxCollection<WritingPost>({
-  directory,
-  parse: ({ fileName, data, content }) => {
-    const slugFromFile = fileName.replace(/\.mdx$/, "");
+function parseWritingFile(fileName: string): WritingPost {
+  const slug = fileName.replace(/\.mdx$/, "");
+  const filePath = path.join(writingsDir, fileName);
+  const source = fs.readFileSync(filePath, "utf-8");
+  const { data, content } = matter(source);
 
-    return {
-      slug: (data.slug as string) ?? slugFromFile,
-      title: (data.title as string) ?? slugFromFile,
-      summary: (data.summary as string) ?? "",
-      date: (data.date as string) ?? "",
-      category: (data.category as string) ?? "uncategorized",
-      published: (data.published as boolean) ?? true,
-      featured: (data.featured as boolean) ?? false,
-      tags: (data.tags as string[]) ?? [],
-      thumbnail: (data.thumbnail as string) ?? "",
-      readingTime: readingTime(content).text,
-      content,
-    };
-  },
-});
-
-export function getAllWritingPosts(): WritingPost[] {
-  return collection.getAllPosts();
+  return {
+    slug,
+    title: data.title ?? "",
+    summary: data.summary ?? "",
+    category: data.category as WritingCategory,
+    tags: data.tags ?? [],
+    date: data.date ?? "",
+    content,
+  };
 }
 
 export function getAllWritings(): WritingMeta[] {
-  return collection.getAllMeta();
+  const files = fs.readdirSync(writingsDir);
+
+  return files
+    .filter((file) => file.endsWith(".mdx"))
+    .map((file) => parseWritingFile(file))
+    .map(({ content, ...meta }) => meta)
+    .sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
 }
 
-export function getFeaturedWritings(): WritingMeta[] {
-  return collection.getFeatured();
+export function getAllWritingPosts(): WritingPost[] {
+  const files = fs.readdirSync(writingsDir);
+
+  return files
+    .filter((file) => file.endsWith(".mdx"))
+    .map((file) => parseWritingFile(file))
+    .sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
 }
 
-export function getWritingCategories(): string[] {
-  const categories = getAllWritings().map((post) => post.category);
-  return [...new Set(categories)];
-}
-
-export function getWritingsByCategory(category: string): WritingMeta[] {
+export function getWritingsByCategory(category: WritingCategory) {
   return getAllWritings().filter((post) => post.category === category);
 }
 
-export function getWritingPostsByCategory(category: string): WritingPost[] {
-  return getAllWritingPosts().filter((post) => post.category === category);
+export function getWritingByCategoryAndSlug(
+  category: WritingCategory,
+  slug: string
+) {
+  return getAllWritingPosts().find(
+    (post) => post.category === category && post.slug === slug
+  );
 }
 
-export function getWritingByCategoryAndSlug(
-  category: string,
-  slug: string
-): WritingPost | null {
-  return (
-    getAllWritingPosts().find(
-      (post) => post.category === category && post.slug === slug
-    ) ?? null
-  );
+export function getWritingBySlug(slug: string) {
+  return getAllWritingPosts().find((post) => post.slug === slug);
+}
+
+export function getRecentWritings(limit = 5) {
+  return getAllWritings().slice(0, limit);
 }
