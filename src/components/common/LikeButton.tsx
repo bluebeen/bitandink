@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { getSupabaseClient } from "@/lib/supabase";
 
 type Props = {
   slug: string;
@@ -35,22 +35,28 @@ export default function LikeButton({ slug, category }: Props) {
   async function fetchLikes() {
     setLoading(true);
 
-    const { data, error } = await supabase
-      .from("likes")
-      .select("count")
-      .eq("slug", slug)
-      .eq("category", category)
-      .maybeSingle<LikeRow>();
+    try {
+      const supabase = getSupabaseClient();
 
-    if (!error && data) {
-      setCount(data.count);
+      const { data, error } = await supabase
+        .from("likes")
+        .select("count")
+        .eq("slug", slug)
+        .eq("category", category)
+        .maybeSingle<LikeRow>();
+
+      if (!error && data) {
+        setCount(data.count);
+      }
+
+      if (!data) {
+        setCount(0);
+      }
+    } catch (error) {
+      console.error("Failed to load likes:", error);
+    } finally {
+      setLoading(false);
     }
-
-    if (!data) {
-      setCount(0);
-    }
-
-    setLoading(false);
   }
 
   async function handleLike() {
@@ -58,54 +64,58 @@ export default function LikeButton({ slug, category }: Props) {
 
     setSubmitting(true);
 
-    const { data: existing, error: selectError } = await supabase
-      .from("likes")
-      .select("count")
-      .eq("slug", slug)
-      .eq("category", category)
-      .maybeSingle<LikeRow>();
+    try {
+      const supabase = getSupabaseClient();
 
-    if (selectError) {
-      console.error("Failed to fetch like row:", selectError);
-      setSubmitting(false);
-      return;
-    }
-
-    if (!existing) {
-      const { error: insertError } = await supabase.from("likes").insert({
-        slug,
-        category,
-        count: 1,
-      });
-
-      if (insertError) {
-        console.error("Failed to insert like row:", insertError);
-        setSubmitting(false);
-        return;
-      }
-
-      setCount(1);
-    } else {
-      const nextCount = existing.count + 1;
-
-      const { error: updateError } = await supabase
+      const { data: existing, error: selectError } = await supabase
         .from("likes")
-        .update({ count: nextCount })
+        .select("count")
         .eq("slug", slug)
-        .eq("category", category);
+        .eq("category", category)
+        .maybeSingle<LikeRow>();
 
-      if (updateError) {
-        console.error("Failed to update like row:", updateError);
-        setSubmitting(false);
+      if (selectError) {
+        console.error("Failed to fetch like row:", selectError);
         return;
       }
 
-      setCount(nextCount);
-    }
+      if (!existing) {
+        const { error: insertError } = await supabase.from("likes").insert({
+          slug,
+          category,
+          count: 1,
+        });
 
-    window.localStorage.setItem(storageKey, "true");
-    setLiked(true);
-    setSubmitting(false);
+        if (insertError) {
+          console.error("Failed to insert like row:", insertError);
+          return;
+        }
+
+        setCount(1);
+      } else {
+        const nextCount = existing.count + 1;
+
+        const { error: updateError } = await supabase
+          .from("likes")
+          .update({ count: nextCount })
+          .eq("slug", slug)
+          .eq("category", category);
+
+        if (updateError) {
+          console.error("Failed to update like row:", updateError);
+          return;
+        }
+
+        setCount(nextCount);
+      }
+
+      window.localStorage.setItem(storageKey, "true");
+      setLiked(true);
+    } catch (error) {
+      console.error("Failed to submit like:", error);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
