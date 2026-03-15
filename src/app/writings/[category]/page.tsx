@@ -1,48 +1,62 @@
 import { notFound } from "next/navigation";
-
 import ContentIndexPage from "@/components/content-ui/ContentIndexPage";
 import {
-  getWritingsByCategory,
-  type WritingCategory,
+  WRITING_CATEGORIES,
+  getCategoryDescription,
+  getCategoryLabel,
+  getPostsByCategory,
+  isWritingCategory,
 } from "@/lib/writings";
 
 type Props = {
-  params: Promise<{ category: string }>;
+  params: Promise<{
+    category: string;
+  }>;
 };
+
+export function generateStaticParams() {
+  return WRITING_CATEGORIES.map((category) => ({ category }));
+}
 
 export async function generateMetadata({ params }: Props) {
   const { category } = await params;
 
+  if (!isWritingCategory(category)) {
+    return {
+      title: "Writings",
+    };
+  }
+
+  const title = `${getCategoryLabel(category)} | Writings`;
+  const description = getCategoryDescription(category);
+
   return {
-    title: `${category} | Writings | bitandink`,
-    description: `${category} 카테고리의 글 모음`,
+    title,
+    description,
   };
 }
 
 export default async function WritingCategoryPage({ params }: Props) {
   const { category } = await params;
-  const writings = getWritingsByCategory(category as WritingCategory);
 
-  if (!writings.length) {
+  if (!isWritingCategory(category)) {
     notFound();
   }
 
-  const items = writings.map((post) => ({
-    href: `/writings/${post.category}/${post.slug}`,
-    title: post.title,
-    summary: post.summary,
-    eyebrow: post.category,
-    tags: post.tags ?? [],
-    slug: post.slug,
-    date: post.date,
-  }));
+  const posts = getPostsByCategory(category);
 
   return (
     <ContentIndexPage
-      eyebrow="WRITING CATEGORY"
-      title={category}
-      description={`${category} 카테고리의 글을 모아봤습니다.`}
-      items={items}
+      eyebrow={`writings / ${category}`}
+      title={getCategoryLabel(category)}
+      description={getCategoryDescription(category)}
+      items={posts.map((post) => ({
+        href: `/writings/${post.category}/${post.slug}`,
+        title: post.title,
+        summary: post.summary,
+        eyebrow: post.date,
+        tags: post.tags,
+      }))}
     />
   );
 }

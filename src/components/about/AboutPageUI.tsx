@@ -1,5 +1,6 @@
 import Container from "@/components/common/Container";
 import SectionTitle from "@/components/common/SectionTitle";
+import GhostIllustration from "@/components/common/GhostIllustration";
 
 function IdentityTags() {
   const tags = ["WRITER", "FRONTENDER", "SITER"];
@@ -65,37 +66,44 @@ export default function AboutPageUI() {
       <Container>
         <section className="relative overflow-hidden rounded-[28px] border border-white/10 paper-surface manuscript-paper">
           <div className="px-8 py-10 md:px-12 md:py-14">
-            <div className="max-w-2xl">
-              <p className="font-mono text-sm text-[var(--color-accent)]">
-                bitandink@beanlog.site:~$
-              </p>
+            <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-14">
+              <div className="max-w-2xl">
+                <p className="font-mono text-sm text-[var(--color-accent)]">
+                  bitandink@beanlog.site:~$
+                </p>
 
-              <SectionTitle
-                eyebrow="about"
-                title={
-                  <>
-                    코드와 이야기 사이를
-                    <br />
-                    오가며 작업합니다
-                  </>
-                }
-                description={
-                  <>
-                    bitandink는 개발과 글쓰기를 따로 두지 않는 이름입니다.
-                    <br />
-                    만들고, 쓰고, 정리하는 과정을 하나의 흐름으로 묶습니다.
-                    <br />
-                    화면을 설계할 때도, 문장을 다듬을 때도
-                    구조와 흐름을 먼저 생각합니다.
-                  </>
-                }
-                className="mt-6"
-                titleClassName="max-w-[700px] md:text-[3.1rem]"
-                descriptionClassName="max-w-[620px]"
+                <SectionTitle
+                  eyebrow="about"
+                  title={
+                    <>
+                      코드와 이야기 사이를
+                      <br />
+                      오가며 작업합니다
+                    </>
+                  }
+                  description={
+                    <>
+                      bitandink는 개발과 글쓰기를 따로 두지 않는 이름입니다.
+                      <br />
+                      만들고, 쓰고, 정리하는 과정을 하나의 흐름으로 묶습니다.
+                      <br />
+                      화면을 설계할 때도, 문장을 다듬을 때도
+                      구조와 흐름을 먼저 생각합니다.
+                    </>
+                  }
+                  className="mt-6"
+                  titleClassName="max-w-[700px] md:text-[3.1rem]"
+                  descriptionClassName="max-w-[620px]"
+                />
+
+                <IdentityTags />
+                <ContactBox />
+              </div>
+
+              <GhostIllustration
+                variant="about"
+                className="hidden lg:block self-end"
               />
-
-              <IdentityTags />
-              <ContactBox />
             </div>
           </div>
         </section>

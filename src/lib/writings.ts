@@ -2,83 +2,138 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 
-export const writingCategories = [
+export const WRITING_CATEGORIES = [
   "novels",
   "essays",
   "synopses",
   "scripts",
 ] as const;
 
-export type WritingCategory = (typeof writingCategories)[number];
+export type WritingCategory = (typeof WRITING_CATEGORIES)[number];
 
-export interface WritingMeta {
+export type WritingPost = {
   slug: string;
   title: string;
   summary: string;
-  category: WritingCategory;
+  date: string;
+  published: boolean;
+  featured?: boolean;
   tags?: string[];
-  date?: string;
-}
-
-export interface WritingPost extends WritingMeta {
+  category: WritingCategory;
   content: string;
+};
+
+const writingsRoot = path.join(process.cwd(), "src/mdx-content/writings");
+
+function isValidCategory(category: string): category is WritingCategory {
+  return WRITING_CATEGORIES.includes(category as WritingCategory);
 }
 
-const writingsDir = path.join(process.cwd(), "src/mdx-content/writings/posts");
+function getCategoryDirectory(category: WritingCategory) {
+  return path.join(writingsRoot, category);
+}
 
-function parseWritingFile(fileName: string): WritingPost {
-  const slug = fileName.replace(/\.mdx$/, "");
-  const filePath = path.join(writingsDir, fileName);
-  const source = fs.readFileSync(filePath, "utf-8");
-  const { data, content } = matter(source);
+function getMdxFiles(category: WritingCategory) {
+  const directory = getCategoryDirectory(category);
+
+  if (!fs.existsSync(directory)) return [];
+
+  return fs.readdirSync(directory).filter((file) => file.endsWith(".mdx"));
+}
+
+function parseWritingPost(category: WritingCategory, fileName: string): WritingPost {
+  const fullPath = path.join(getCategoryDirectory(category), fileName);
+  const fileContents = fs.readFileSync(fullPath, "utf8");
+  const { data, content } = matter(fileContents);
 
   return {
-    slug,
-    title: data.title ?? "",
-    summary: data.summary ?? "",
-    category: data.category as WritingCategory,
-    tags: data.tags ?? [],
-    date: data.date ?? "",
+    slug: fileName.replace(/\.mdx$/, ""),
+    title: String(data.title ?? ""),
+    summary: String(data.summary ?? ""),
+    date: String(data.date ?? ""),
+    published: Boolean(data.published ?? false),
+    featured: Boolean(data.featured ?? false),
+    tags: Array.isArray(data.tags)
+      ? data.tags.map((tag) => String(tag))
+      : [],
+    category,
     content,
   };
 }
 
-export function getAllWritings(): WritingMeta[] {
-  const files = fs.readdirSync(writingsDir);
-
-  return files
-    .filter((file) => file.endsWith(".mdx"))
-    .map((file) => parseWritingFile(file))
-    .map(({ content, ...meta }) => meta)
-    .sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
-}
-
 export function getAllWritingPosts(): WritingPost[] {
-  const files = fs.readdirSync(writingsDir);
-
-  return files
-    .filter((file) => file.endsWith(".mdx"))
-    .map((file) => parseWritingFile(file))
-    .sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
+  return WRITING_CATEGORIES.flatMap((category) =>
+    getMdxFiles(category).map((fileName) => parseWritingPost(category, fileName))
+  )
+    .filter((post) => post.published)
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
-export function getWritingsByCategory(category: WritingCategory) {
-  return getAllWritings().filter((post) => post.category === category);
+export function getWritingCategories() {
+  return WRITING_CATEGORIES.map((category) => ({
+    slug: category,
+    title: getCategoryLabel(category),
+    description: getCategoryDescription(category),
+  }));
 }
 
-export function getWritingByCategoryAndSlug(
-  category: WritingCategory,
-  slug: string
-) {
-  return getAllWritingPosts().find(
-    (post) => post.category === category && post.slug === slug
+export function getPostsByCategory(category: WritingCategory): WritingPost[] {
+  return getAllWritingPosts().filter((post) => post.category === category);
+}
+
+export function getWritingPost(category: string, slug: string): WritingPost | null {
+  if (!isValidCategory(category)) return null;
+
+  return (
+    getAllWritingPosts().find(
+      (post) => post.category === category && post.slug === slug
+    ) ?? null
   );
 }
 
-export function getWritingBySlug(slug: string) {
-  return getAllWritingPosts().find((post) => post.slug === slug);
+export function getFeaturedWritingPosts() {
+  return getAllWritingPosts()
+    .filter((post) => post.featured)
+    .map(({ content, ...meta }) => meta);
 }
 
-export function getRecentWritings(limit = 5) {
-  return getAllWritings().slice(0, limit);
+export function getAllWritingMeta() {
+  return getAllWritingPosts().map(({ content, ...meta }) => meta);
+}
+
+export function getAllWritingParams() {
+  return getAllWritingPosts().map((post) => ({
+    category: post.category,
+    slug: post.slug,
+  }));
+}
+
+export function getCategoryLabel(category: WritingCategory) {
+  switch (category) {
+    case "novels":
+      return "Novels";
+    case "essays":
+      return "Essays";
+    case "synopses":
+      return "Synopses";
+    case "scripts":
+      return "Scripts";
+  }
+}
+
+export function getCategoryDescription(category: WritingCategory) {
+  switch (category) {
+    case "novels":
+      return "장편과 단편, 이야기의 결을 따라가는 소설 작업들.";
+    case "essays":
+      return "생각과 경험을 문장으로 정리한 에세이들.";
+    case "synopses":
+      return "이야기의 뼈대와 가능성을 압축한 시놉시스들.";
+    case "scripts":
+      return "대사와 장면 중심으로 전개되는 스크립트 작업들.";
+  }
+}
+
+export function isWritingCategory(category: string): category is WritingCategory {
+  return isValidCategory(category);
 }

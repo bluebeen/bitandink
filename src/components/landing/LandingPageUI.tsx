@@ -1,5 +1,6 @@
 import Container from "@/components/common/Container";
 import BaseCard from "@/components/common/BaseCard";
+import GhostIllustration from "@/components/common/GhostIllustration";
 
 const introItems = [
   {
@@ -68,28 +69,35 @@ export default function LandingPageUI() {
       <Container>
         <section className="relative overflow-hidden rounded-[28px] border border-white/10 terminal-frame terminal-paper-panel scanline noise-overlay code-overlay code-rain">
           <div className="relative px-8 py-10 md:px-12 md:py-14">
-            <div className="max-w-2xl">
-              <p className="terminal-caret font-mono text-sm text-[var(--color-accent)]">
-                bitandink@beanlog.site:~$
-              </p>
+            <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-14">
+              <div className="max-w-2xl">
+                <p className="terminal-caret font-mono text-sm text-[var(--color-accent)]">
+                  bitandink@beanlog.site:~$
+                </p>
 
-              <h1 className="mt-6 max-w-xl break-keep text-4xl font-semibold leading-[1.15] tracking-tight text-[var(--color-text)] md:text-6xl md:leading-[1.1]">
-                코드와 이야기가
-                <br />
-                만나는 허브
-              </h1>
+                <h1 className="mt-6 max-w-xl break-keep text-4xl font-semibold leading-[1.15] tracking-tight text-[var(--color-text)] md:text-6xl md:leading-[1.1]">
+                  코드와 이야기가
+                  <br />
+                  만나는 허브
+                </h1>
 
-              <p className="mt-4 text-xs uppercase tracking-[0.3em] text-[var(--color-sub)]">
-                CODE & STORIES
-              </p>
+                <p className="mt-4 text-xs uppercase tracking-[0.3em] text-[var(--color-sub)]">
+                  CODE & STORIES
+                </p>
 
-              <p className="mt-6 max-w-xl break-keep text-sm leading-7 text-[var(--color-sub)] md:text-lg">
-                개발과 글쓰기, 그리고 웹사이트 제작을
-                <br />
-                하나의 흐름으로 묶어 정리하는 개인 허브입니다.
-              </p>
+                <p className="mt-6 max-w-xl break-keep text-sm leading-7 text-[var(--color-sub)] md:text-lg">
+                  개발과 글쓰기, 그리고 웹사이트 제작을
+                  <br />
+                  하나의 흐름으로 묶어 정리하는 개인 허브입니다.
+                </p>
 
-              <IdentityTags />
+                <IdentityTags />
+              </div>
+
+              <GhostIllustration
+                variant="home"
+                className="hidden lg:block translate-y-[-10px]"
+              />
             </div>
 
             <IntroCards />
