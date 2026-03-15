@@ -1,13 +1,16 @@
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import Container from "@/components/common/Container";
+import LikeButton from "@/components/common/LikeButton";
+import ScrapButton from "@/components/common/ScrapButton";
 import {
   getAllWritingParams,
   getCategoryLabel,
   getWritingPost,
   isWritingCategory,
 } from "@/lib/writings";
-import ScrapButton from "@/components/common/ScrabButton";
+import Comments from "@/components/common/Comments";
+import ViewCounter from "@/components/common/ViewCounter";
 
 type Props = {
   params: Promise<{
@@ -75,7 +78,7 @@ export default async function WritingDetailPage({ params }: Props) {
 
             <div className="mt-5 flex flex-wrap items-center gap-3 text-xs text-[var(--color-sub)]">
               <span>{post.date}</span>
-
+              <span><ViewCounter slug={post.slug} category={post.category} /></span>
               {post.tags?.map((tag) => (
                 <span
                   key={tag}
@@ -85,7 +88,9 @@ export default async function WritingDetailPage({ params }: Props) {
                 </span>
               ))}
 
-              <div className="ml-auto">
+              <LikeButton slug={post.slug} category={post.category} />
+
+              <div className="sm:ml-auto">
                 <ScrapButton />
               </div>
             </div>
@@ -94,6 +99,8 @@ export default async function WritingDetailPage({ params }: Props) {
           <div className="prose prose-invert mx-auto mt-10 max-w-3xl prose-headings:text-[var(--color-text)] prose-p:text-[var(--color-sub)] prose-strong:text-[var(--color-text)] prose-li:text-[var(--color-sub)]">
             <MDXRemote source={post.content} />
           </div>
+
+          <Comments slug={post.slug} category={post.category} />
         </article>
       </Container>
     </section>
