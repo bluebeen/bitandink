@@ -7,6 +7,7 @@ import {
   getWritingPost,
   isWritingCategory,
 } from "@/lib/writings";
+import ScrapButton from "@/components/common/ScrabButton";
 
 type Props = {
   params: Promise<{
@@ -83,6 +84,10 @@ export default async function WritingDetailPage({ params }: Props) {
                   {tag}
                 </span>
               ))}
+
+              <div className="ml-auto">
+                <ScrapButton />
+              </div>
             </div>
           </header>
 

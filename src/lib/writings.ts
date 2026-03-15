@@ -23,6 +23,8 @@ export type WritingPost = {
   content: string;
 };
 
+export type WritingMeta = Omit<WritingPost, "content">;
+
 const writingsRoot = path.join(process.cwd(), "src/mdx-content/writings");
 
 function isValidCategory(category: string): category is WritingCategory {
@@ -41,7 +43,10 @@ function getMdxFiles(category: WritingCategory) {
   return fs.readdirSync(directory).filter((file) => file.endsWith(".mdx"));
 }
 
-function parseWritingPost(category: WritingCategory, fileName: string): WritingPost {
+function parseWritingPost(
+  category: WritingCategory,
+  fileName: string
+): WritingPost {
   const fullPath = path.join(getCategoryDirectory(category), fileName);
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const { data, content } = matter(fileContents);
@@ -62,11 +67,42 @@ function parseWritingPost(category: WritingCategory, fileName: string): WritingP
 }
 
 export function getAllWritingPosts(): WritingPost[] {
-  return WRITING_CATEGORIES.flatMap((category) =>
+  const posts = WRITING_CATEGORIES.flatMap((category) =>
     getMdxFiles(category).map((fileName) => parseWritingPost(category, fileName))
-  )
+  );
+
+  return posts
     .filter((post) => post.published)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+}
+
+export function getPostsByCategory(category: WritingCategory): WritingPost[] {
+  return getAllWritingPosts().filter((post) => post.category === category);
+}
+
+export function getWritingPost(
+  category: string,
+  slug: string
+): WritingPost | null {
+  if (!isValidCategory(category)) return null;
+
+  const posts = getPostsByCategory(category);
+  return posts.find((post) => post.slug === slug) ?? null;
+}
+
+export function getAllWritingMeta(): WritingMeta[] {
+  return getAllWritingPosts().map(({ content, ...meta }) => meta);
+}
+
+export function getFeaturedWritingPosts(): WritingMeta[] {
+  return getAllWritingMeta().filter((post) => post.featured);
+}
+
+export function getAllWritingParams() {
+  return getAllWritingPosts().map((post) => ({
+    category: post.category,
+    slug: post.slug,
+  }));
 }
 
 export function getWritingCategories() {
@@ -74,37 +110,6 @@ export function getWritingCategories() {
     slug: category,
     title: getCategoryLabel(category),
     description: getCategoryDescription(category),
-  }));
-}
-
-export function getPostsByCategory(category: WritingCategory): WritingPost[] {
-  return getAllWritingPosts().filter((post) => post.category === category);
-}
-
-export function getWritingPost(category: string, slug: string): WritingPost | null {
-  if (!isValidCategory(category)) return null;
-
-  return (
-    getAllWritingPosts().find(
-      (post) => post.category === category && post.slug === slug
-    ) ?? null
-  );
-}
-
-export function getFeaturedWritingPosts() {
-  return getAllWritingPosts()
-    .filter((post) => post.featured)
-    .map(({ content, ...meta }) => meta);
-}
-
-export function getAllWritingMeta() {
-  return getAllWritingPosts().map(({ content, ...meta }) => meta);
-}
-
-export function getAllWritingParams() {
-  return getAllWritingPosts().map((post) => ({
-    category: post.category,
-    slug: post.slug,
   }));
 }
 
@@ -134,6 +139,8 @@ export function getCategoryDescription(category: WritingCategory) {
   }
 }
 
-export function isWritingCategory(category: string): category is WritingCategory {
+export function isWritingCategory(
+  category: string
+): category is WritingCategory {
   return isValidCategory(category);
 }
