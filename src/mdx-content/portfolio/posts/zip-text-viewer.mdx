@@ -7,12 +7,12 @@ year: "2026"
 published: true
 featured: true
 stack:
-  - "Python 3"
-  - "PySide6"
-  - "Qt"
-  - "zipfile"
-  - "PyInstaller"
-thumbnail: "/images/portfolio/zip-text-viewer/cover.png"
+  ● "Python 3"
+  ● "PySide6"
+  ● "Qt"
+  ● "zipfile"
+  ● "PyInstaller"
+thumbnail: "/images/portfolio/ztv.png"
 link: ""
 github: "https://github.com/bluebeen/zip_text_viewer"
 problem: "ZIP 내부 문서를 확인할 때마다 압축을 해제해야 했고, UTF-8과 CP949가 혼재된 환경에서는 텍스트 확인 자체가 번거로웠다. 특히 로그, 설정 파일, 일반 문서가 함께 들어 있는 ZIP을 빠르게 훑어보는 데 비효율이 컸다."
@@ -27,23 +27,23 @@ result: "반복적인 압축 해제 작업 없이 ZIP 내부 텍스트를 즉시
 
 특히 다음과 같은 상황에서 불편함이 컸다.
 
-- 텍스트 파일만 빠르게 확인하고 싶은 경우
-- UTF-8과 CP949(구형 한글 인코딩)가 혼재된 문서 환경
-- 로그 파일과 일반 문서가 함께 들어 있는 ZIP 파일
+● 텍스트 파일만 빠르게 확인하고 싶은 경우
+● UTF-8과 CP949(구형 한글 인코딩)가 혼재된 문서 환경
+● 로그 파일과 일반 문서가 함께 들어 있는 ZIP 파일
 
 이 문제를 해결하기 위해,  
 **압축 해제 없이 ZIP 내부 텍스트를 바로 확인할 수 있는 전용 뷰어**를 개인 프로젝트로 구현했다.
 
 ## 주요 기능
 
-- ZIP 내부 텍스트 파일 목록 표시
-- 선택한 파일을 **디스크에 압축 해제하지 않고 스트림으로 읽어 미리보기**
-- UTF-8 우선 자동 디코딩, 실패 시 CP949 fallback
-- 인코딩 수동 전환 (`UTF-8 / CP949`)
-- 텍스트 검색 기능
-  - `Ctrl + F`: 검색창 포커스
-  - `Enter / Shift + Enter`: 다음 / 이전 검색
-- 대용량 파일 미리보기 크기 제한
+● ZIP 내부 텍스트 파일 목록 표시
+● 선택한 파일을 **디스크에 압축 해제하지 않고 스트림으로 읽어 미리보기**
+● UTF-8 우선 자동 디코딩, 실패 시 CP949 fallback
+● 인코딩 수동 전환 (`UTF-8 / CP949`)
+● 텍스트 검색 기능
+  ● `Ctrl + F`: 검색창 포커스
+  ● `Enter / Shift + Enter`: 다음 / 이전 검색
+● 대용량 파일 미리보기 크기 제한
 
 ## 문제 정의
 
@@ -60,19 +60,19 @@ result: "반복적인 압축 해제 작업 없이 ZIP 내부 텍스트를 즉시
 
 문서와 로그는 읽는 목적이 다르다고 봤다.
 
-- 일반 문서 / 대본  
+● 일반 문서 / 대본  
   → 가독성이 중요 → **자동 줄바꿈이 유리**
-- 로그 / 설정 / 코드  
+● 로그 / 설정 / 코드  
   → 컬럼 정렬과 가로 구조 유지가 중요 → **줄바꿈 비활성화가 유리**
 
 이를 반영해 다음 UX를 설계했다.
 
-- 줄바꿈 ON / OFF 토글 버튼 제공
-- 확장자 기반 자동 줄바꿈 권장
-  - `.txt`, `.md` → 줄바꿈 ON
-  - `.log`, `.json`, `.yml`, `.csv` → 줄바꿈 OFF
-- 자동 권장 기능을 끌 수 있는 옵션 제공
-- 사용자가 수동으로 전환하면 해당 파일에서는 설정 유지
+● 줄바꿈 ON / OFF 토글 버튼 제공
+● 확장자 기반 자동 줄바꿈 권장
+  ● `.txt`, `.md` → 줄바꿈 ON
+  ● `.log`, `.json`, `.yml`, `.csv` → 줄바꿈 OFF
+● 자동 권장 기능을 끌 수 있는 옵션 제공
+● 사용자가 수동으로 전환하면 해당 파일에서는 설정 유지
 
 > 하나의 고정된 UI보다,  
 > 상황에 따라 전환 가능한 UX가 더 적합하다고 판단했다.
@@ -86,24 +86,24 @@ result: "반복적인 압축 해제 작업 없이 ZIP 내부 텍스트를 즉시
 
 #### 발생한 문제
 
-- `QMoveEvent` 객체에서 `KeyPress` 속성 접근 오류
-- `QTextEdit.FindFlags` 사용 시 `AttributeError`
-- 커서 이동 시 `cursor.Start` 사용으로 인한 enum 오류
+● `QMoveEvent` 객체에서 `KeyPress` 속성 접근 오류
+● `QTextEdit.FindFlags` 사용 시 `AttributeError`
+● 커서 이동 시 `cursor.Start` 사용으로 인한 enum 오류
 
 #### 원인 분석
 
-- PySide6에서는 이벤트 타입 비교 시  
+● PySide6에서는 이벤트 타입 비교 시  
   `event.KeyPress`가 아니라 **`QEvent.KeyPress`** 사용 필요
-- 검색 옵션은 `QTextEdit`가 아니라  
+● 검색 옵션은 `QTextEdit`가 아니라  
   **`QTextDocument.FindFlags`** 사용 필요
-- 커서 위치 이동은  
+● 커서 위치 이동은  
   **`QTextCursor.Start`** enum 사용 필요
 
 #### 해결
 
-- PySide6 / Qt enum 구조와 이벤트 흐름 재확인
-- 잘못된 API 및 enum 사용 전부 수정
-- 검색 및 단축키 기능 안정화
+● PySide6 / Qt enum 구조와 이벤트 흐름 재확인
+● 잘못된 API 및 enum 사용 전부 수정
+● 검색 및 단축키 기능 안정화
 
 ![PySide6 이벤트 처리 오류](\/images\/portfolio\/zip-text-viewer\/pyside6_eventfilter_error.webp)
 
@@ -113,14 +113,14 @@ result: "반복적인 압축 해제 작업 없이 ZIP 내부 텍스트를 즉시
 
 #### 원인
 
-- PyInstaller로 실행한 GUI 프로그램이 종료되지 않은 상태에서
-- PowerShell이 해당 Python 프로세스를 대기 중이었음
+● PyInstaller로 실행한 GUI 프로그램이 종료되지 않은 상태에서
+● PowerShell이 해당 Python 프로세스를 대기 중이었음
 
 #### 대응
 
-- 콘솔 문제나 코드 오류가 아니라  
+● 콘솔 문제나 코드 오류가 아니라  
   **GUI 실행 상태로 인한 정상 동작**임을 확인
-- GUI 앱과 콘솔 실행 흐름 차이를 정리
+● GUI 앱과 콘솔 실행 흐름 차이를 정리
 
 ![PowerShell GUI 프로세스 대기 현상](\/images\/portfolio\/zip-text-viewer\/powershell_gui_process_blocked.webp)
 
@@ -140,16 +140,14 @@ result: "반복적인 압축 해제 작업 없이 ZIP 내부 텍스트를 즉시
 4. 확장자 기반 자동 권장 기능 구현
 5. 초장문 로그/설정 파일 더미를 생성해 최소 창 크기에서도 검증
 
-![줄바꿈 UX 개선 과정](\/images\/portfolio\/zip-text-viewer\/wrap-ux-improvement.png)
-
 ### 4. 단어 단위 줄바꿈의 한계와 전략 개선
 
 UTF-8 텍스트임에도 줄바꿈이 제대로 동작하지 않는 테스트 케이스를 발견했다.
 
 #### 발견한 현상
 
-- 개인적으로 사용하던 UTF-8 문서에서는 자동 줄바꿈이 정상 동작
-- 테스트용으로 생성한 UTF-8 텍스트 파일에서는  
+● 개인적으로 사용하던 UTF-8 문서에서는 자동 줄바꿈이 정상 동작
+● 테스트용으로 생성한 UTF-8 텍스트 파일에서는  
   줄바꿈 ON 상태임에도 가로로 계속 늘어짐
 
 #### 원인 분석
@@ -159,9 +157,9 @@ Qt의 `WordWrap`은
 
 테스트용 파일은 다음과 같았다.
 
-- 언더스코어(`_`)로 연결된 긴 문자열 반복
-- Qt 기준으로는 **하나의 단어로 인식**
-- 단어 내부를 분리하지 않기 때문에 줄바꿈이 발생하지 않음
+● 언더스코어(`_`)로 연결된 긴 문자열 반복
+● Qt 기준으로는 **하나의 단어로 인식**
+● 단어 내부를 분리하지 않기 때문에 줄바꿈이 발생하지 않음
 
 즉, 문제는 인코딩이 아니라  
 **Qt의 줄바꿈 정책 자체의 특성**이었다.
@@ -173,16 +171,14 @@ Qt의 `WordWrap`은
 
 이 옵션은
 
-- 가능한 경우 단어 단위로 줄바꿈
-- 단어 경계가 없을 경우에도 임의 지점에서 줄바꿈 허용
+● 가능한 경우 단어 단위로 줄바꿈
+● 단어 경계가 없을 경우에도 임의 지점에서 줄바꿈 허용
 
 #### 결과
 
-- 공백 없는 긴 문자열(URL, 로그 토큰, 설정 값)에서도 줄바꿈 정상 동작
-- 일반 문서의 가독성은 유지
-- 실제 로그/설정 파일 환경에 더 적합한 UX 확보
-
-![Wrap 전략 개선 결과](\/images\/portfolio\/zip-text-viewer\/wrap-strategy.png)
+● 공백 없는 긴 문자열(URL, 로그 토큰, 설정 값)에서도 줄바꿈 정상 동작
+● 일반 문서의 가독성은 유지
+● 실제 로그/설정 파일 환경에 더 적합한 UX 확보
 
 ## 배포 구조
 
@@ -190,43 +186,41 @@ Qt의 `WordWrap`은
 
 ### exe 배포
 
-- PyInstaller `-onefile` 옵션 사용
-- 단일 실행파일로 패키징
-- 설치 과정 없이 바로 실행 가능
-- 개인 실사용 중심
+● PyInstaller `-onefile` 옵션 사용
+● 단일 실행파일로 패키징
+● 설치 과정 없이 바로 실행 가능
+● 개인 실사용 중심
 
 ### 폴더 배포
 
-- PyInstaller `-onedir` 옵션 사용
-- 실행 파일과 함께 PySide6 / Qt 런타임 포함
-- 의존성 구조를 명확하게 보여줄 수 있어  
+● PyInstaller `-onedir` 옵션 사용
+● 실행 파일과 함께 PySide6 / Qt 런타임 포함
+● 의존성 구조를 명확하게 보여줄 수 있어  
   포트폴리오 설명에도 적합
 
 > 단일 배포 방식보다,  
 > **목적에 맞게 배포 전략을 분리하는 편이 더 합리적**이라고 판단했다.
 
-![배포 구조](\/images\/portfolio\/zip-text-viewer\/distribution-structure.png)
-
 ## 결과 및 활용
 
-- 반복적인 압축 해제 작업 제거
-- UTF-8 / CP949 혼합 환경에서도 안정적인 한글 표시
-- 문서 확인과 로그 분석을 하나의 도구로 통합
-- 개인 작업과 테스트 용도로 실사용 중
+● 반복적인 압축 해제 작업 제거
+● UTF-8 / CP949 혼합 환경에서도 안정적인 한글 표시
+● 문서 확인과 로그 분석을 하나의 도구로 통합
+● 개인 작업과 테스트 용도로 실사용 중
 
 ## 기술 스택
 
-- **Language**: Python 3
-- **UI Framework**: PySide6 (Qt)
-- **Compression**: `zipfile` (Python 표준 라이브러리)
-- **Packaging**: PyInstaller
+● **Language**: Python 3
+● **UI Framework**: PySide6 (Qt)
+● **Compression**: `zipfile` (Python 표준 라이브러리)
+● **Packaging**: PyInstaller
 
 ## 향후 확장
 
-- 7z 포맷 지원
-- ZIP 드래그 앤 드롭 열기
-- 로그/코드 모드에서 고정폭 폰트 자동 전환
-- 다중 파일 탭 UI
+● 7z 포맷 지원
+● ZIP 드래그 앤 드롭 열기
+● 로그/코드 모드에서 고정폭 폰트 자동 전환
+● 다중 파일 탭 UI
 
 ## 한 줄 요약
 
