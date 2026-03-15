@@ -45,6 +45,15 @@ export default function useKeyboardNav() {
         return;
       }
 
+      const shortcutsModalOpen = document.querySelector(
+        '[data-shortcuts-modal="open"]'
+      );
+
+      if (shortcutsModalOpen) {
+        clearPending();
+        return;
+      }
+
       if (e.key === "Escape") {
         clearPending();
         return;
@@ -67,8 +76,8 @@ export default function useKeyboardNav() {
           clearPending();
           router.push("/studio");
           return;
-        } 
-        
+        }
+
         if (e.key === "a") {
           clearPending();
           router.push("/about");

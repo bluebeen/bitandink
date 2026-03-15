@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
+import readingTime from "reading-time";
 
 export const WRITING_CATEGORIES = [
   "novels",
@@ -21,6 +22,7 @@ export type WritingPost = {
   tags?: string[];
   category: WritingCategory;
   content: string;
+  readingTime: string;
 };
 
 export type WritingMeta = Omit<WritingPost, "content">;
@@ -50,6 +52,7 @@ function parseWritingPost(
   const fullPath = path.join(getCategoryDirectory(category), fileName);
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const { data, content } = matter(fileContents);
+  const stats = readingTime(content);
 
   return {
     slug: fileName.replace(/\.mdx$/, ""),
@@ -63,6 +66,7 @@ function parseWritingPost(
       : [],
     category,
     content,
+    readingTime: stats.text,
   };
 }
 
@@ -143,4 +147,26 @@ export function isWritingCategory(
   category: string
 ): category is WritingCategory {
   return isValidCategory(category);
+}
+
+export function getAdjacentPosts(category: WritingCategory, slug: string) {
+  const posts = getPostsByCategory(category);
+
+  const index = posts.findIndex((post) => post.slug === slug);
+
+  const prev = index > 0 ? posts[index - 1] : null;
+  const next = index < posts.length - 1 ? posts[index + 1] : null;
+
+  return { prev, next };
+}
+
+export function getPaginatedPosts(
+  posts: WritingPost[],
+  page: number,
+  perPage: number
+) {
+  const start = (page - 1) * perPage;
+  const end = start + perPage;
+
+  return posts.slice(start, end);
 }

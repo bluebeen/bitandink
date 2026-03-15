@@ -7,8 +7,11 @@ const shortcuts = [
   { keys: ["g", "w"], label: "writings" },
   { keys: ["g", "p"], label: "portfolio" },
   { keys: ["g", "s"], label: "studio" },
+  { keys: ["g", "a"], label: "about" },
+  { keys: ["←"], label: "previous post (post page)" },
+  { keys: ["→"], label: "next post (post page)" },
+  { keys: ["esc"], label: "back / close modal" },
   { keys: ["?"], label: "toggle shortcuts" },
-  { keys: ["esc"], label: "close modal" },
 ];
 
 export default function KeyboardShortcuts() {
@@ -44,7 +47,10 @@ export default function KeyboardShortcuts() {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 px-6 backdrop-blur-sm">
+    <div
+      data-shortcuts-modal="open"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 px-6 backdrop-blur-sm"
+    >
       <div className="terminal-frame terminal-paper-panel w-full max-w-lg rounded-3xl p-6 pt-14 md:p-8 md:pt-16">
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -72,7 +78,9 @@ export default function KeyboardShortcuts() {
               key={`${item.keys.join("-")}-${item.label}`}
               className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-3"
             >
-              <span className="text-sm text-[var(--color-sub)]">{item.label}</span>
+              <span className="text-sm text-[var(--color-sub)]">
+                {item.label}
+              </span>
 
               <div className="flex items-center gap-2">
                 {item.keys.map((key) => (
