@@ -19,7 +19,7 @@ export default function GhostIllustration({
       aria-hidden="true"
     >
       <Image
-        src="/images/bean-avatar.png"
+        src="/images/bean/bean-default.png"
         alt=""
         width={520}
         height={700}

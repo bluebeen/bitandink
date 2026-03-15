@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
+import { cache } from "react";
 
 export interface StudioMeta {
   slug: string;
@@ -40,29 +41,26 @@ function parseStudioFile(fileName: string): StudioPost {
   };
 }
 
-export function getAllStudios(): StudioMeta[] {
+const readAllStudioPosts = cache(function readAllStudioPosts(): StudioPost[] {
   const files = fs.readdirSync(studioDir);
 
   return files
     .filter((file) => file.endsWith(".mdx"))
     .map((file) => parseStudioFile(file))
     .filter((studio) => studio.published !== false)
-    .map(({ content, ...meta }) => meta)
     .sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
+});
+
+export function getAllStudios(): StudioMeta[] {
+  return readAllStudioPosts().map(({ content, ...meta }) => meta);
 }
 
 export function getAllStudioPosts(): StudioPost[] {
-  const files = fs.readdirSync(studioDir);
-
-  return files
-    .filter((file) => file.endsWith(".mdx"))
-    .map((file) => parseStudioFile(file))
-    .filter((studio) => studio.published !== false)
-    .sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
+  return readAllStudioPosts();
 }
 
 export function getStudioBySlug(slug: string) {
-  return getAllStudioPosts().find((studio) => studio.slug === slug);
+  return readAllStudioPosts().find((studio) => studio.slug === slug);
 }
 
 export function getRecentStudios(limit = 5) {

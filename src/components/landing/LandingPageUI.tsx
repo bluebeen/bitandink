@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import Container from "@/components/common/Container";
 import BaseCard from "@/components/common/BaseCard";
 import GhostIllustration from "@/components/common/GhostIllustration";
@@ -18,17 +20,22 @@ const introItems = [
 ];
 
 function IdentityTags() {
-  const tags = ["WRITER", "FRONTENDER", "SITER"];
+  const tags = [
+    { label: "WRITER", href: "/writings" },
+    { label: "FRONTENDER", href: "/portfolio" },
+    { label: "SITER", href: "/studio" },
+  ];
 
   return (
-    <div className="mt-6 flex flex-wrap gap-2">
+    <div className="mt-7 flex flex-wrap gap-2.5">
       {tags.map((tag) => (
-        <span
-          key={tag}
-          className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--color-accent)]"
+        <Link
+          key={tag.label}
+          href={tag.href}
+          className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--color-accent)] transition hover:border-[var(--color-accent)] hover:bg-white/[0.06]"
         >
-          {tag}
-        </span>
+          {tag.label}
+        </Link>
       ))}
     </div>
   );
@@ -36,24 +43,28 @@ function IdentityTags() {
 
 function IntroCards() {
   return (
-    <div className="mt-8 grid gap-5 md:grid-cols-3">
+    <div className="mt-10 grid gap-4 md:mt-12 md:grid-cols-3 md:gap-5">
       {introItems.map((item) => (
-        <BaseCard key={item.title} hover={false}>
-          <div className="relative">
-            <p className="font-mono text-xs uppercase tracking-[0.22em] text-[var(--color-accent)]">
+        <BaseCard
+          key={item.title}
+          hover={false}
+          className="h-full rounded-[22px] border-white/10 bg-white/[0.03]"
+        >
+          <div className="relative flex min-h-[152px] flex-col">
+            <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-[var(--color-accent)] md:text-xs">
               {item.title}
             </p>
 
             <span
               aria-hidden="true"
-              className="absolute left-0 top-[26px] block h-px w-[76%]"
+              className="absolute left-0 top-[24px] block h-px w-[72%]"
               style={{
                 background:
-                  "linear-gradient(to right, rgba(34,197,94,0.82), rgba(100,116,139,0.22))",
+                  "linear-gradient(to right, rgba(34,197,94,0.75), rgba(100,116,139,0.18))",
               }}
             />
 
-            <p className="mt-8 break-keep text-sm leading-7 text-[var(--color-sub)]">
+            <p className="mt-7 break-keep text-sm leading-7 text-[color:rgba(203,213,225,0.78)]">
               {item.desc}
             </p>
           </div>
@@ -65,39 +76,54 @@ function IntroCards() {
 
 export default function LandingPageUI() {
   return (
-    <section className="py-12 md:py-16">
+    <section className="py-10 md:py-14">
       <Container>
-        <section className="relative overflow-hidden rounded-[28px] border border-white/10 terminal-frame terminal-paper-panel scanline noise-overlay code-overlay code-rain">
-          <div className="relative px-8 py-10 md:px-12 md:py-14">
-            <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-14">
+        <section
+          className="
+          relative overflow-hidden
+          rounded-[28px]
+          border border-white/10
+          terminal-frame terminal-paper-panel
+          scanline noise-overlay code-overlay code-rain
+          before:absolute before:inset-0
+          before:bg-[radial-gradient(circle_at_30%_40%,rgba(34,197,94,0.08),transparent_60%)]
+          before:pointer-events-none
+      "
+        >
+          <div className="relative px-7 py-9 md:px-12 md:py-12 lg:px-12 lg:py-12">
+            <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-12">
               <div className="max-w-2xl">
                 <p className="terminal-caret font-mono text-sm text-[var(--color-accent)]">
                   bitandink@beanlog.site:~$
                 </p>
 
-                <h1 className="mt-6 max-w-xl break-keep text-4xl font-semibold leading-[1.15] tracking-tight text-[var(--color-text)] md:text-6xl md:leading-[1.1]">
+                <h1 className="mt-5 max-w-[11ch] break-keep text-4xl font-semibold leading-[1.08] tracking-[-0.03em] text-[var(--color-text)] md:mt-6 md:max-w-xl md:text-6xl">
                   코드와 이야기가
-                  <br />
+                  <br className="hidden md:block" />
+                  <span className="md:hidden"> </span>
                   만나는 허브
                 </h1>
 
-                <p className="mt-4 text-xs uppercase tracking-[0.3em] text-[var(--color-sub)]">
+                <p className="mt-4 text-[11px] uppercase tracking-[0.28em] text-[color:rgba(148,163,184,0.82)]">
                   CODE & STORIES
                 </p>
 
-                <p className="mt-6 max-w-xl break-keep text-sm leading-7 text-[var(--color-sub)] md:text-lg">
+                <p className="mt-5 max-w-xl break-keep text-sm leading-7 text-[color:rgba(203,213,225,0.74)] md:mt-6 md:text-[17px] md:leading-8">
                   개발과 글쓰기, 그리고 웹사이트 제작을
-                  <br />
+                  <br className="hidden sm:block" />
+                  <span className="sm:hidden"> </span>
                   하나의 흐름으로 묶어 정리하는 개인 허브입니다.
                 </p>
 
                 <IdentityTags />
               </div>
 
-              <GhostIllustration
-                variant="home"
-                className="hidden lg:block translate-y-[-10px]"
-              />
+              <div className="relative hidden lg:flex lg:justify-center">
+                <GhostIllustration
+                  variant="home"
+                  className="translate-y-2 scale-[0.94] opacity-95"
+                />
+              </div>
             </div>
 
             <IntroCards />

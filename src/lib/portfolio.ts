@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
+import { cache } from "react";
 
 export interface ProjectMeta {
   slug: string;
@@ -50,29 +51,26 @@ function parseProjectFile(fileName: string): ProjectPost {
   };
 }
 
-export function getAllProjects(): ProjectMeta[] {
+const readAllProjectPosts = cache(function readAllProjectPosts(): ProjectPost[] {
   const files = fs.readdirSync(portfolioDir);
 
   return files
     .filter((file) => file.endsWith(".mdx"))
     .map((file) => parseProjectFile(file))
     .filter((project) => project.published !== false)
-    .map(({ content, ...meta }) => meta)
     .sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
+});
+
+export function getAllProjects(): ProjectMeta[] {
+  return readAllProjectPosts().map(({ content, ...meta }) => meta);
 }
 
 export function getAllProjectPosts(): ProjectPost[] {
-  const files = fs.readdirSync(portfolioDir);
-
-  return files
-    .filter((file) => file.endsWith(".mdx"))
-    .map((file) => parseProjectFile(file))
-    .filter((project) => project.published !== false)
-    .sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
+  return readAllProjectPosts();
 }
 
 export function getProjectBySlug(slug: string) {
-  return getAllProjectPosts().find((project) => project.slug === slug);
+  return readAllProjectPosts().find((project) => project.slug === slug);
 }
 
 export function getRecentProjects(limit = 5) {

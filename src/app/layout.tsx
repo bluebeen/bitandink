@@ -6,6 +6,8 @@ import Footer from "@/components/layout/Footer";
 import KeyboardNavProvider from "@/components/common/KeyboardNavProvider";
 import KeyboardShortcuts from "@/components/common/KeyboardShortcuts";
 
+import BeanEasterEgg from "@/components/common/BeanEasterEgg";
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://beanlog.site"),
 
@@ -37,6 +39,8 @@ export const metadata: Metadata = {
   },
 };
 
+
+
 export default function RootLayout({
   children,
 }: {
@@ -45,6 +49,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
+        <BeanEasterEgg />
         <KeyboardNavProvider>
           <Header />
           <main>{children}</main>

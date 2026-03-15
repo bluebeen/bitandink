@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Container from "@/components/common/Container";
 import ConceptPanel from "@/components/common/ConceptPanel";
+import BeanAvatar from "@/components/common/BeanAvatar";
 
 const quickLinks = [
   { href: "/writings", label: "open --writings" },
@@ -10,85 +11,80 @@ const quickLinks = [
 
 export default function NotFound() {
   return (
-    <section className="py-20 md:py-28">
-      <Container>
-        <ConceptPanel variant="writing">
-          <div className="max-w-3xl">
-            <p className="font-mono text-sm text-[var(--color-accent)]">
-              archive@beanlog.site:~$
-            </p>
+    <Container className="py-16 md:py-24">
+      <div className="mx-auto max-w-3xl space-y-8">
+        <div className="flex flex-col items-center text-center">
+          <div className="mb-6 flex justify-center">
+            <div className="relative h-28 w-28 md:h-32 md:w-32">
+              <BeanAvatar variant="confused" className="h-full w-full" />
+            </div>
+          </div>
 
-            <p className="mt-6 font-mono text-xs uppercase tracking-[0.28em] text-[var(--color-accent)]">
-              404 / lost in the archive
-            </p>
+          <p className="mb-3 text-[11px] uppercase tracking-[0.26em] text-[var(--color-sub)]">
+            archive@beanlog.site:~$
+          </p>
 
-            <h1 className="mt-4 max-w-[720px] break-keep text-4xl font-semibold leading-[1.18] tracking-tight text-[var(--color-text)] md:text-6xl">
-              찾으시는 페이지는
-              <br />
-              아직 준비 중입니다.
-            </h1>
+          <h1 className="text-3xl font-semibold tracking-tight text-[var(--color-text)] md:text-4xl">
+            404 / lost in the archive
+          </h1>
 
-            <p className="mt-6 max-w-[620px] break-keep text-sm leading-7 text-[var(--color-sub)] md:text-base">
-              요청하신 페이지는 아직 작성 중이거나,
-              현재 공개되지 않은 경로일 수 있습니다.
-              <br />
-              이 사이트의 일부 섹션은 구조를 먼저 만들고 내용을 채워가는 방식으로 작업하고 있습니다.
-            </p>
+          <p className="mt-4 max-w-xl text-sm leading-7 text-[var(--color-sub)] md:text-base">
+            요청하신 페이지는 아직 작성 중이거나, 현재 공개되지 않은 경로일 수 있어요.
+            구조를 먼저 만들고 내용을 채워가는 섹션도 있어서 잠시 비어 보일 수 있습니다.
+          </p>
+        </div>
 
-            <div className="mt-8 max-w-[640px] rounded-2xl border border-white/10 bg-black/20 p-5 font-mono text-sm text-[var(--color-sub)]">
-              <p>
-                <span className="text-[var(--color-accent)]">$</span> open --page
+        <ConceptPanel>
+          <div className="space-y-5">
+            <div className="space-y-1">
+              <p className="text-xs uppercase tracking-[0.24em] text-[var(--color-sub)]">
+                $ open --page
               </p>
-              <p className="mt-2 text-red-400">error: page not found</p>
-              <p className="mt-4">
-                <span className="text-[var(--color-accent)]">$</span> hint
-              </p>
-              <p className="mt-2">일부 콘텐츠는 현재 정리 및 작성 중입니다.</p>
+              <p className="text-sm text-[var(--color-text)]">error: page not found</p>
             </div>
 
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="space-y-1">
+              <p className="text-xs uppercase tracking-[0.24em] text-[var(--color-sub)]">
+                $ hint
+              </p>
+              <p className="text-sm leading-7 text-[var(--color-sub)]">
+                일부 콘텐츠는 현재 정리 및 작성 중입니다.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-3 pt-2">
               <Link
                 href="/"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.02] px-5 py-3 font-mono text-sm text-[var(--color-text)] transition-all duration-200 hover:border-[rgba(34,197,94,0.26)] hover:bg-[rgba(34,197,94,0.05)]"
+                className="rounded-full border border-[var(--color-accent)]/40 bg-[var(--color-accent)]/10 px-4 py-2 text-sm text-[var(--color-text)] transition hover:border-[var(--color-accent)] hover:bg-[var(--color-accent)]/15"
               >
-                <span className="text-[var(--color-accent)]">$</span>
                 홈으로 돌아가기
               </Link>
 
               <Link
                 href="/about"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-medium text-[var(--color-text)] transition-all duration-200 hover:bg-white/[0.06] hover:border-white/15"
+                className="rounded-full border border-white/15 px-4 py-2 text-sm text-[var(--color-text)] transition hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
               >
                 about 보기
               </Link>
             </div>
-
-            <div className="mt-10 grid gap-4 md:grid-cols-3">
-              {quickLinks.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="paper-surface group rounded-2xl p-5 transition-all duration-300 hover:-translate-y-1 hover:border-[rgba(34,197,94,0.28)]"
-                >
-                  <p className="font-mono text-xs uppercase tracking-[0.22em] text-[var(--color-accent)]">
-                    quick path
-                  </p>
-
-                  <div className="mt-4 h-px w-[76%] bg-[linear-gradient(to_right,rgba(34,197,94,0.42),rgba(100,116,139,0.10))]" />
-
-                  <span className="mt-5 inline-flex items-center gap-2 font-mono text-sm text-[var(--color-text)]">
-                    <span className="text-[var(--color-accent)]">$</span>
-                    {item.label}
-                    <span className="transition-transform duration-200 group-hover:translate-x-1">
-                      →
-                    </span>
-                  </span>
-                </Link>
-              ))}
-            </div>
           </div>
         </ConceptPanel>
-      </Container>
-    </section>
+
+        <div className="grid gap-3 md:grid-cols-3">
+          {quickLinks.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-sm text-[var(--color-text)] transition hover:border-[var(--color-accent)]/50 hover:bg-white/10"
+            >
+              <div className="mb-2 text-[10px] uppercase tracking-[0.22em] text-[var(--color-sub)]">
+                quick path
+              </div>
+              <div className="font-medium">$ {item.label}</div>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </Container>
   );
 }

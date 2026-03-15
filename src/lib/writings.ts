@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import readingTime from "reading-time";
+import { cache } from "react";
 
 export const WRITING_CATEGORIES = [
   "novels",
@@ -39,16 +40,11 @@ function getCategoryDirectory(category: WritingCategory) {
 
 function getMdxFiles(category: WritingCategory) {
   const directory = getCategoryDirectory(category);
-
   if (!fs.existsSync(directory)) return [];
-
   return fs.readdirSync(directory).filter((file) => file.endsWith(".mdx"));
 }
 
-function parseWritingPost(
-  category: WritingCategory,
-  fileName: string
-): WritingPost {
+function parseWritingPost(category: WritingCategory, fileName: string): WritingPost {
   const fullPath = path.join(getCategoryDirectory(category), fileName);
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const { data, content } = matter(fileContents);
@@ -61,16 +57,14 @@ function parseWritingPost(
     date: String(data.date ?? ""),
     published: Boolean(data.published ?? false),
     featured: Boolean(data.featured ?? false),
-    tags: Array.isArray(data.tags)
-      ? data.tags.map((tag) => String(tag))
-      : [],
+    tags: Array.isArray(data.tags) ? data.tags.map((tag) => String(tag)) : [],
     category,
     content,
     readingTime: stats.text,
   };
 }
 
-export function getAllWritingPosts(): WritingPost[] {
+const readAllWritingPosts = cache(function readAllWritingPosts(): WritingPost[] {
   const posts = WRITING_CATEGORIES.flatMap((category) =>
     getMdxFiles(category).map((fileName) => parseWritingPost(category, fileName))
   );
@@ -78,24 +72,23 @@ export function getAllWritingPosts(): WritingPost[] {
   return posts
     .filter((post) => post.published)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+});
+
+export function getAllWritingPosts(): WritingPost[] {
+  return readAllWritingPosts();
 }
 
 export function getPostsByCategory(category: WritingCategory): WritingPost[] {
-  return getAllWritingPosts().filter((post) => post.category === category);
+  return readAllWritingPosts().filter((post) => post.category === category);
 }
 
-export function getWritingPost(
-  category: string,
-  slug: string
-): WritingPost | null {
+export function getWritingPost(category: string, slug: string): WritingPost | null {
   if (!isValidCategory(category)) return null;
-
-  const posts = getPostsByCategory(category);
-  return posts.find((post) => post.slug === slug) ?? null;
+  return getPostsByCategory(category).find((post) => post.slug === slug) ?? null;
 }
 
 export function getAllWritingMeta(): WritingMeta[] {
-  return getAllWritingPosts().map(({ content, ...meta }) => meta);
+  return readAllWritingPosts().map(({ content, ...meta }) => meta);
 }
 
 export function getFeaturedWritingPosts(): WritingMeta[] {
@@ -103,7 +96,7 @@ export function getFeaturedWritingPosts(): WritingMeta[] {
 }
 
 export function getAllWritingParams() {
-  return getAllWritingPosts().map((post) => ({
+  return readAllWritingPosts().map((post) => ({
     category: post.category,
     slug: post.slug,
   }));
@@ -143,30 +136,20 @@ export function getCategoryDescription(category: WritingCategory) {
   }
 }
 
-export function isWritingCategory(
-  category: string
-): category is WritingCategory {
+export function isWritingCategory(category: string): category is WritingCategory {
   return isValidCategory(category);
 }
 
 export function getAdjacentPosts(category: WritingCategory, slug: string) {
   const posts = getPostsByCategory(category);
-
   const index = posts.findIndex((post) => post.slug === slug);
-
   const prev = index > 0 ? posts[index - 1] : null;
   const next = index < posts.length - 1 ? posts[index + 1] : null;
-
   return { prev, next };
 }
 
-export function getPaginatedPosts(
-  posts: WritingPost[],
-  page: number,
-  perPage: number
-) {
+export function getPaginatedPosts(posts: WritingPost[], page: number, perPage: number) {
   const start = (page - 1) * perPage;
   const end = start + perPage;
-
   return posts.slice(start, end);
 }
