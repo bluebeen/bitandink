@@ -8,6 +8,7 @@ import ScrapButton from "@/components/common/ScrapButton";
 import Comments from "@/components/common/Comments";
 import ViewCounter from "@/components/common/ViewCounter";
 import PostKeyboardNav from "@/components/common/PostKeyboardNav";
+import DetailPager from "@/components/common/DetailPager";
 
 import {
   getAllWritingParams,
@@ -114,33 +115,30 @@ export default async function WritingDetailPage({ params }: Props) {
             </div>
           </header>
 
-          <div className="article-body prose prose-invert mx-auto mt-10 max-w-3xl prose-headings:text-[var(--color-text)] prose-p:text-[var(--color-sub)] prose-strong:text-[var(--color-text)] prose-li:text-[var(--color-sub)]">
+          <div className="writing-body prose prose-invert mx-auto mt-10 max-w-3xl prose-headings:text-[var(--color-text)] prose-p:text-[var(--color-sub)] prose-strong:text-[var(--color-text)] prose-li:text-[var(--color-sub)]">
             <MDXRemote source={post.content} />
           </div>
 
-          <div className="mx-auto mt-16 max-w-3xl border-t border-white/10 pt-10">
-            <div className="flex justify-between gap-6 text-sm">
-              {prev ? (
-                <Link
-                  href={`/writings/${prev.category}/${prev.slug}`}
-                  className="opacity-70 transition hover:opacity-100"
-                >
-                  ← {prev.title}
-                </Link>
-              ) : (
-                <div />
-              )}
-
-              {next ? (
-                <Link
-                  href={`/writings/${next.category}/${next.slug}`}
-                  className="text-right opacity-70 transition hover:opacity-100"
-                >
-                  {next.title} →
-                </Link>
-              ) : null}
-            </div>
-          </div>
+          <DetailPager
+            prev={
+              prev
+                ? {
+                    href: `/writings/${prev.category}/${prev.slug}`,
+                    label: prev.title,
+                  }
+                : null
+            }
+            next={
+              next
+                ? {
+                    href: `/writings/${next.category}/${next.slug}`,
+                    label: next.title,
+                  }
+                : null
+            }
+            indexHref={`/writings/${post.category}`}
+            indexLabel={`${getCategoryLabel(post.category)} 목록으로`}
+          />
 
           <Comments slug={post.slug} category={post.category} />
         </article>

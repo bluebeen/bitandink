@@ -565,60 +565,6 @@ img {
   }
 }
 
-/* =========================
-   ARTICLE TYPOGRAPHY
-========================= */
-
-.article-body {
-  line-height: 1.9;
-  font-size: 1.05rem;
-  max-width: 680px;
-}
-
-.article-body p {
-  margin-top: 1.4rem;
-  margin-bottom: 1.4rem;
-}
-
-.article-body h2 {
-  margin-top: 3rem;
-  margin-bottom: 1.2rem;
-}
-
-.article-body h3 {
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-}
-
-.article-body ul,
-.article-body ol {
-  margin-top: 1.4rem;
-  margin-bottom: 1.4rem;
-}
-
-.article-body li {
-  margin-top: 0.4rem;
-}
-
-.article-body blockquote {
-  border-left: 2px solid rgba(255,255,255,0.15);
-  padding-left: 1rem;
-  opacity: 0.9;
-}
-
-.article-body code {
-  font-size: 0.9em;
-}
-
-@media (max-width: 768px) {
-
-  .article-body {
-    font-size: 1rem;
-    line-height: 1.85;
-  }
-
-}
-
 @keyframes bean-float {
   0%, 100% {
     transform: translateY(0px);

@@ -66,3 +66,13 @@ export function getStudioBySlug(slug: string) {
 export function getRecentStudios(limit = 5) {
   return getAllStudios().slice(0, limit);
 }
+
+export function getAdjacentStudios(slug: string) {
+  const items = getAllStudios();
+  const index = items.findIndex((item) => item.slug === slug);
+
+  const prev = index > 0 ? items[index - 1] : null;
+  const next = index < items.length - 1 ? items[index + 1] : null;
+
+  return { prev, next };
+}

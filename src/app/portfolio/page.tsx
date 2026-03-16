@@ -30,7 +30,7 @@ export default function PortfolioPage() {
           <div className="relative space-y-8 px-4 py-4 md:space-y-10 md:px-5 md:py-5">
             <SectionCommandHeader
               command="open --portfolio"
-              status="selected works loaded"
+              status="> selected works loaded"
               title="Portfolio"
               description="문제를 정의하고 구조를 설계한 뒤, 화면과 흐름으로 구현한 작업들."
               variant="portfolio"

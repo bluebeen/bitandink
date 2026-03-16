@@ -76,3 +76,13 @@ export function getProjectBySlug(slug: string) {
 export function getRecentProjects(limit = 5) {
   return getAllProjects().slice(0, limit);
 }
+
+export function getAdjacentProjects(slug: string) {
+  const items = getAllProjects();
+  const index = items.findIndex((item) => item.slug === slug);
+
+  const prev = index > 0 ? items[index - 1] : null;
+  const next = index < items.length - 1 ? items[index + 1] : null;
+
+  return { prev, next };
+}

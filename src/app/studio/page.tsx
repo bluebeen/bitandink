@@ -28,7 +28,7 @@ export default function StudioPage() {
           <div className="relative space-y-8 px-4 py-4 md:space-y-10 md:px-5 md:py-5">
             <SectionCommandHeader
               command="open --studio"
-              status="visual archive ready"
+              status="> visual archive ready"
               title="Studio"
               description="실험, 기록, 시각적 메모를 모아두는 작업실 아카이브."
               variant="studio"
