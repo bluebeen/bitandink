@@ -3,6 +3,7 @@ import Link from "next/link";
 import Container from "@/components/common/Container";
 import BaseCard from "@/components/common/BaseCard";
 import GhostIllustration from "@/components/common/GhostIllustration";
+import BeanTapTarget from "@/components/common/BeanTapTarget";
 
 const introItems = [
   {
@@ -119,10 +120,12 @@ export default function LandingPageUI() {
               </div>
 
               <div className="relative hidden lg:flex lg:justify-center">
-                <GhostIllustration
-                  variant="home"
-                  className="translate-y-2 scale-[0.94] opacity-95"
-                />
+                <BeanTapTarget className="relative block h-full w-full focus:outline-none">
+                  <GhostIllustration
+                    variant="home"
+                    className="translate-y-2 scale-[0.94] opacity-95"
+                  />
+                </BeanTapTarget>
               </div>
             </div>
 

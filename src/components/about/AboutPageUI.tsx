@@ -1,6 +1,7 @@
 import Container from "@/components/common/Container";
 import SectionTitle from "@/components/common/SectionTitle";
 import GhostIllustration from "@/components/common/GhostIllustration";
+import BeanTapTarget from "@/components/common/BeanTapTarget";
 
 function IdentityTags() {
   const tags = ["WRITER", "FRONTENDER", "SITER"];
@@ -87,8 +88,8 @@ export default function AboutPageUI() {
                       <br />
                       만들고, 쓰고, 정리하는 과정을 하나의 흐름으로 묶습니다.
                       <br />
-                      화면을 설계할 때도, 문장을 다듬을 때도
-                      구조와 흐름을 먼저 생각합니다.
+                      화면을 설계할 때도, 문장을 다듬을 때도 구조와 흐름을 먼저
+                      생각합니다.
                     </>
                   }
                   className="mt-6"
@@ -99,11 +100,12 @@ export default function AboutPageUI() {
                 <IdentityTags />
                 <ContactBox />
               </div>
-
-              <GhostIllustration
-                variant="about"
-                className="hidden lg:block self-end"
-              />
+              <BeanTapTarget>
+                <GhostIllustration
+                  variant="about"
+                  className="hidden lg:block self-end"
+                />
+              </BeanTapTarget>
             </div>
           </div>
         </section>
