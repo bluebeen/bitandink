@@ -93,6 +93,9 @@ function getBeanStateByTime(): BeanState {
       "그리고 재미있는 책을 읽는 것도 좋아해요.",
       "가끔은 아카이브를 정리하고,",
       "가끔은 사이트를 돌아다니며 기록을 살펴봐요.",
+      "제 창조주는 이름 끝자가 '빈'이고 키가 작아서 별명이 콩꼬마(콩꼬)래요.",
+      "그래서 제 이름을 Bean이라고 지어줬어요.",
+      "근데 저는 마음에 들어요. 빈이는 빈을 좋아하거든요. 그래서 Bean이 됐어요.",
       "저를 또 만나게 된다면 잘 탐험하고 있다는 뜻이에요.",
     ],
     showImage: true,
@@ -303,7 +306,7 @@ export default function BeanEasterEgg() {
               <div className="absolute bottom-5 h-8 w-[220px] rounded-full bg-black/35 blur-xl" />
 
               {beanState.showImage ? (
-                <div className="bean-idle relative h-[560px] w-[400px] md:h-[620px] md:w-[440px]">
+                <div className="bean-idle bean-escape-attempt relative h-[560px] w-[400px] md:h-[620px] md:w-[440px]">
                   <Image
                     src={BEAN_FULL_SRC}
                     alt="Bean full body"

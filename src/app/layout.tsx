@@ -7,6 +7,8 @@ import KeyboardNavProvider from "@/components/common/KeyboardNavProvider";
 import KeyboardShortcuts from "@/components/common/KeyboardShortcuts";
 
 import BeanEasterEgg from "@/components/common/BeanEasterEgg";
+import BeanDrop from "@/components/common/BeanDrop";
+import BeanFollower from "@/components/common/BeanFollower";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://beanlog.site"),
@@ -49,6 +51,8 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
+        <BeanFollower />
+        <BeanDrop />
         <BeanEasterEgg />
         <KeyboardNavProvider>
           <Header />

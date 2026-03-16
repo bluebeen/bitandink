@@ -615,3 +615,148 @@ img {
   animation: bean-idle-walk 3.2s ease-in-out infinite;
   transform-origin: center bottom;
 }
+
+@keyframes bean-idle-walk {
+  0% {
+    transform: translateX(0px) translateY(0px) rotate(0deg);
+  }
+  20% {
+    transform: translateX(4px) translateY(-3px) rotate(0.6deg);
+  }
+  40% {
+    transform: translateX(8px) translateY(0px) rotate(0deg);
+  }
+  60% {
+    transform: translateX(4px) translateY(-2px) rotate(-0.6deg);
+  }
+  80% {
+    transform: translateX(-2px) translateY(0px) rotate(0deg);
+  }
+  100% {
+    transform: translateX(0px) translateY(0px) rotate(0deg);
+  }
+}
+
+.bean-idle {
+  animation: bean-idle-walk 3.2s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+@keyframes bean-escape-attempt {
+  0% {
+    transform: translateX(0) translateY(0) rotate(0deg);
+  }
+  8% {
+    transform: translateX(0) translateY(0) rotate(0deg);
+  }
+  18% {
+    transform: translateX(10px) translateY(-4px) rotate(0.6deg);
+  }
+  28% {
+    transform: translateX(18px) translateY(0px) rotate(0deg);
+  }
+  38% {
+    transform: translateX(26px) translateY(-3px) rotate(-0.5deg);
+  }
+  48% {
+    transform: translateX(18px) translateY(0px) rotate(0deg);
+  }
+  58% {
+    transform: translateX(8px) translateY(-2px) rotate(0.3deg);
+  }
+  68%,
+  100% {
+    transform: translateX(0) translateY(0) rotate(0deg);
+  }
+}
+
+.bean-escape-attempt {
+  animation:
+    bean-idle-walk 3.2s ease-in-out infinite,
+    bean-escape-attempt 8.5s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+@keyframes bean-drop-fall {
+  0% {
+    transform: translateY(-180px) rotate(-12deg) scale(0.92);
+    opacity: 0;
+  }
+
+  18% {
+    opacity: 1;
+  }
+
+  62% {
+    transform: translateY(82px) rotate(7deg) scale(1);
+    opacity: 1;
+  }
+
+  76% {
+    transform: translateY(58px) rotate(2deg) scale(0.98);
+    opacity: 1;
+  }
+
+  88% {
+    transform: translateY(72px) rotate(-2deg) scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(68px) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes bean-drop-escape {
+  0% {
+    transform: translateX(0) translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(120px) translateY(-8px) rotate(8deg);
+    opacity: 0;
+  }
+}
+
+.bean-drop-hidden {
+  opacity: 0;
+  transform: translateY(-220px);
+}
+
+.bean-drop-active {
+  animation:
+    bean-drop-fall 0.78s cubic-bezier(0.18, 0.72, 0.22, 1) forwards,
+    bean-drop-escape 0.45s ease-in 0.92s forwards;
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+/* ===============================
+   Bean follower animation
+================================ */
+
+@keyframes bean-follow-bounce {
+  0% {
+    transform: translateY(0px) scale(1);
+  }
+
+  50% {
+    transform: translateY(-4px) scale(1.03);
+  }
+
+  100% {
+    transform: translateY(0px) scale(1);
+  }
+}
+
+.bean-follower {
+  transform: translate(-50%, -50%);
+  animation: bean-follow-bounce 0.8s ease-in-out infinite;
+  transition:
+    left 0.12s linear,
+    top 0.12s linear,
+    opacity 0.2s ease;
+  will-change: transform;
+}

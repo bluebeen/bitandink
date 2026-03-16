@@ -4,6 +4,7 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import Container from "@/components/common/Container";
 import DetailCommandHero from "@/components/common/DetailCommandHero";
 import DetailPager from "@/components/common/DetailPager";
+import BeanPeek from "@/components/common/BeanPeek";
 
 import {
   getAllStudios,
@@ -53,6 +54,7 @@ export default async function StudioDetailPage({ params }: Props) {
           />
 
           <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.05),rgba(255,255,255,0.03))] px-5 py-6 md:px-8 md:py-8">
+            <BeanPeek storageKey={`studio:${item.slug}`} />
             <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(to_right,rgba(34,197,94,0.35),transparent)]" />
 
             <article className="writing-body prose prose-invert mx-auto max-w-3xl prose-headings:text-[var(--color-text)] prose-p:text-[var(--color-sub)] prose-strong:text-[var(--color-text)] prose-li:text-[var(--color-sub)]">
@@ -77,7 +79,7 @@ export default async function StudioDetailPage({ params }: Props) {
                   : null
               }
               indexHref="/studio"
-              indexLabel="Studio 목록으로"
+              indexLabel="return to studio"
             />
           </div>
         </div>
