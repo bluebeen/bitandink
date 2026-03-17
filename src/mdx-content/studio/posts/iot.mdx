@@ -1,0 +1,182 @@
+---
+title: "Iot 교육 플랫폼 제작"
+slug: "Iot 교육 플랫폼 제작"
+summary: "게시판 + 인증 + 검색 + 교육 시스템을 포함한 풀스택 웹 플랫폼 설계 및 구축 프로젝트"
+date: "2026-03-04"
+year: "2026"
+published: true
+featured: true
+thumbnail: "/images/studio/iot.png"
+tags:
+  - "교육플랫폼제작"
+  - "SpringBoot"
+  - "CMS게시판개발"
+---
+> IoT 교사 자격증 교육 및 시험 접수 통합 플랫폼
+
+**📅 2023년 개발**  
+**👤 Full-stack (Back/Front/DB)**  
+**🚀 cafe24 WAR 배포**
+
+---
+
+## 01. 기술 스택
+
+### Backend
+- Spring Boot 3.1.1
+- Java 17
+- Spring Security
+- Spring Data JPA
+
+### Frontend
+- Thymeleaf
+- Bootstrap 5
+- JavaScript
+
+### Database
+- MariaDB
+- Native Query
+
+### Build / Ops
+- Gradle
+- WAR 배포
+
+### Security
+- BCrypt
+- Session Authentication
+
+---
+
+## 02. 시스템 아키텍처
+```
+Client (Browser)
+↓
+Controller (Spring MVC)
+↓
+Service (Business Logic)
+↓
+Repository (JPA / Native)
+↓
+Database (MariaDB)
+```
+---
+
+## 03. 주요 기능
+
+### 👤 회원 관리 시스템
+- 이메일 인증코드(6자리) 발송 및 검증
+- BCrypt 기반 비밀번호 암호화
+- 프로필 이미지 DB BLOB 저장
+- 권한 계층 관리 (관리자 / 일반 / 정지)
+
+---
+
+### 🗂️ 게시판 시스템 (13종)
+- 시험(EXM), 교육(EDU), 정보(IFM), 홍보(PMT)
+- 서버사이드 페이지네이션 (20개 단위)
+- FN_VIEWCOUNT 프로시저 조회수 증가
+- 실시간 접수 상태 자동 계산
+
+---
+
+### 🔍 통합 검색 엔진
+- 카테고리별 분리 / 통합 검색
+- 인덱스 필터 기반 상세 검색
+- 제목 + 본문 LIKE 검색
+- 검색 결과 페이지네이션
+
+---
+
+### 🏠 메인 페이지
+- 배너 슬라이더
+- 최신 교육 / 공지사항 큐레이션
+- 갤러리형 콘텐츠 구성
+
+---
+
+### 📧 보안 인증 시스템
+- JavaMailSender 기반 SMTP 연동
+- 세션 기반 인증코드 저장
+- HTML 이메일 템플릿 발송
+
+---
+
+## 04. DB 설계 (EAV 패턴)
+
+- OPB_SUBJECT : 게시판 카테고리
+- OPB_TASK : 게시글 본문 (복합키)
+- OPB_TASK_ATTR : 확장 속성 데이터
+- OPB_ATTR : 속성 정의 메타데이터
+- OPB_PERIOD : 기간 관리
+- OPB_ATTACH : 첨부파일 / 이미지 BLOB
+- OPB_MMD : 공통코드
+- OPB_USER : 회원 정보
+- CompositeKey : JPA 복합키 클래스
+
+---
+
+## 05. 기술적 구현 포인트
+
+### 1. 이미지 처리 방식
+- 파일 서버 없이 DB BLOB 저장
+- 조회 시 Base64 변환 후 전달
+
+---
+
+### 2. 타입 안전 디코딩
+- Native Query 결과(Object[]) 변환 유틸 구현
+- NPE / Casting 오류 방지
+
+---
+
+### 3. 쿼리 최적화
+- 7~8개 테이블 JOIN으로 단일 조회
+- DB 접근 최소화
+
+---
+
+### 4. 실시간 상태 계산
+- SQL CASE WHEN 활용
+- 별도 스케줄러 없이 상태 계산
+
+---
+
+### SQL 예시
+
+```
+SELECT
+  CASE
+    WHEN CURRENT_TIMESTAMP < START_DATETIME THEN '접수 전'
+    WHEN CURRENT_TIMESTAMP BETWEEN START_DATETIME AND END_DATETIME THEN '접수 중'
+    ELSE '마감'
+  END AS STATUS
+  ```
+### Java 예시
+```
+public static List<String> decodeInfoList(List<Object[]> info) {
+    List<String> decodedList = new ArrayList<>();
+
+    for (Object[] arr : info) {
+        for (Object obj : arr) {
+            if (obj instanceof byte[]) {
+                decodedList.add(new String((byte[]) obj, "UTF-8"));
+            } else {
+                decodedList.add(obj != null ? obj.toString() : "");
+            }
+        }
+    }
+
+    return decodedList;
+}
+```
+## 06. 프로젝트 규모
+
+- Java Classes: 35+
+- HTML Views: 50+
+- Board Types: 13
+- CSS Files: 30+
+
+# 📌 요약
+
+> 게시판 + 인증 + 검색 + 교육 시스템을 포함한
+> 풀스택 웹 플랫폼 설계 및 구축 프로젝트
